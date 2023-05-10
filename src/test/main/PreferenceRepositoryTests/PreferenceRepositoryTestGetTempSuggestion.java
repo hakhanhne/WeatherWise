@@ -1,7 +1,5 @@
 package main.PreferenceRepositoryTests;
 
-import helper.SensorData;
-import helper.User;
 import main.PreferenceRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -9,48 +7,39 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import support.Preference;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.runners.Parameterized.*;
-
 import java.lang.reflect.Field;
-import java.util.*;
-
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.junit.runners.Parameterized.Parameter;
+import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestGetUserInfo {
+public class PreferenceRepositoryTestGetTempSuggestion {
 
     // Test inputs for the parameterized test
-    @Parameter
+    @Parameter(0)
     public static String testName;
     @Parameter(1)
     public static String name;
     @Parameter(2)
     public static List<Preference> testPreferences;
     @Parameter(3)
-    public static User expectedUserInfo;
+    public static int tempThreshold;
+    @Parameter(4)
+    public static String expectedSuggestion;
 
     private static PreferenceRepository preferenceRepository;
-    public static int apoThreshhold;
-    public static int clock;
-    public static SensorData sensorData;
-    public static int weather;
-    public static boolean apoReached;
-    public static boolean tempReached;
 
     // init
     @BeforeClass
     public static void setUpTest() {
         preferenceRepository = new PreferenceRepository();
 
-        apoThreshhold = 0;
-        clock = 0;
-        sensorData = null;
-        weather = 0;
-        apoReached = false;
-        tempReached = false;
     }
 
     @Parameters(name = "{0}: {1}")
@@ -71,20 +60,20 @@ public class PreferenceRepositoryTestGetUserInfo {
         return Arrays.asList(new Object[][] {
                 // Test case 1: Empty preferences
                 {"Empty pref list", "Jack", new ArrayList<>(),
-                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                        35, null
                 },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
-                        new User(2, new int[]{20, 30}, 0, 0, new SensorData(), 0, false, false)
+                        35, "pool"
                 },
                 // David
                 {"Non-empty pref list", "David", multiplePreferences,
-                        new User(3, new int[]{16}, 0, 0, new SensorData(), 0, false, false)
+                        35, "pool"
                 },
                 // Test case 3: Multiple users - no match
                 {"Non-empty pref list but no match", "John", multiplePreferences,
-                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                        35, null
                 },
                 // Test case 4: Non-empty list - empty temperature preferences
                 {"Non-empty pref list but empty temperature preferences", "Jack", new ArrayList<>(List.of(
@@ -92,7 +81,7 @@ public class PreferenceRepositoryTestGetUserInfo {
                                 "when APO suggest bowling",
                                 "when weather suggest cinema"
                         )))),
-                        new User(2, new int[0], 0, 0, new SensorData(), 0, false, false)
+                        35, null
                 },
                 // Test case 5: Non-empty list - 1 invalid over 2 temperature preferences
                 // Above Upperbound
@@ -103,7 +92,7 @@ public class PreferenceRepositoryTestGetUserInfo {
                                 "when 30 suggest pool",
                                 "when weather suggest cinema"
                         )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                        35, "pool"
                 },
                 // Below Lower bound
                 {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
@@ -113,7 +102,7 @@ public class PreferenceRepositoryTestGetUserInfo {
                                 "when 30 suggest pool",
                                 "when weather suggest cinema"
                         )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                        35, "pool"
                 },
                 // Invalid data type
                 {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
@@ -123,7 +112,44 @@ public class PreferenceRepositoryTestGetUserInfo {
                                 "when 30 suggest pool",
                                 "when weather suggest cinema"
                         )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                        35, "pool"
+                },
+                // Test case 6: Non-empty list - temp threshold with various values
+                // between 2 temp preferences
+                {"Non-empty pref list and temp threshold between 2 temp preferences", "Jack", multiplePreferences,
+                        25, "shops"
+                },
+                // below the first temp preference
+                {"Non-empty pref list and temp threshold below the first temp preference", "Jack", multiplePreferences,
+                        15, null
+                },
+                // above the final temp preference
+                {"Non-empty pref list and temp threshold above the final temp preference", "Jack", multiplePreferences,
+                        49, "pool"
+                },
+                // at the boundary value of the first temp preference
+                {"Non-empty pref list and temp threshold at the boundary value of the first temp preference", "Jack", multiplePreferences,
+                        20, "shops"
+                },
+                // at the lower bound
+                {"Non-empty pref list and temp threshold at the lower bound", "Jack", multiplePreferences,
+                        0, null
+                },
+                // at the upper bound
+                {"Non-empty pref list and temp threshold at the upper bound", "Jack", multiplePreferences,
+                        50, "pool"
+                },
+                // above the upper bound
+                {"Non-empty pref list and temp threshold above the upper bound", "Jack", multiplePreferences,
+                        51, null
+                },
+                // below the lower bound
+                {"Non-empty pref list and temp threshold below the lower bound", "Jack", multiplePreferences,
+                        -1, null
+                },
+                // just above the upper bound
+                {"Non-empty pref list and temp threshold just above the upper bound", "Jack", multiplePreferences,
+                        50.0001, null
                 },
         });
     }
@@ -135,20 +161,20 @@ public class PreferenceRepositoryTestGetUserInfo {
         preferencesField.setAccessible(true);
         preferencesField.set(preferenceRepository, testPreferences);
     }
-
     // ---------------------------------------------
     @Test
-    public void testGetUserInfo() {
-        PreferenceRepository.PreferenceWorkerI worker = new PreferenceRepository.PreferenceWorkerI();
-        User actualUserInfo = worker.getUserInfo(name, null);
-        // Use JUnit to compare the actual and expected user info
-        System.out.println("name: " + name + ": expected medical: " + expectedUserInfo.medicalConditionType + " " +
-                                   "actual" +
-                                   " medical: " + actualUserInfo.medicalConditionType);
-        assertEquals("Medical condition type", expectedUserInfo.medicalConditionType, actualUserInfo.medicalConditionType);
-        assertArrayEquals("Temperature thresholds", expectedUserInfo.tempThreshholds, actualUserInfo.tempThreshholds);
-        assertEquals("APO threshold", expectedUserInfo.apoThreshhold, actualUserInfo.apoThreshhold);
+    public void testGetSuggestionTemp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        // Use reflection to access the private getSuggestionTemp() method
+        Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionTemp", String.class,
+                                                                       Integer.class);
+        getSuggestionTempMethod.setAccessible(true);
+
+        // Invoke the readPreference() method and cast the result to List<Preference>
+        // name, weather temporary
+        @SuppressWarnings("unchecked")
+        String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository,
+                                                                    name, tempThreshold);
+        assertEquals("Temperature Suggestion", expectedSuggestion, suggestion);
 
     }
-
 }
