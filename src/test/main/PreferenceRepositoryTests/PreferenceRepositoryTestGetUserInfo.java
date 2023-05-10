@@ -1,9 +1,8 @@
-package main;
+package main.PreferenceRepositoryTests;
 
-import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.Current;
 import helper.SensorData;
 import helper.User;
+import main.PreferenceRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,15 +14,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.runners.Parameterized.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTest {
+public class PreferenceRepositoryTestGetUserInfo {
 
     // Test inputs for the parameterized test
     @Parameter
@@ -43,7 +40,7 @@ public class PreferenceRepositoryTest {
     public static boolean apoReached;
     public static boolean tempReached;
 
-//    // init
+    // init
     @BeforeClass
     public static void setUpTest() {
         preferenceRepository = new PreferenceRepository();
@@ -76,26 +73,60 @@ public class PreferenceRepositoryTest {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
-
-                // Test case 2: Multiple preferences - Jack
-                {"Normal pref list", "Jack", multiplePreferences,
+                // Test case 2: Multiple users
+                // Jack
+                {"Non-empty pref list", "Jack", multiplePreferences,
                         new User(2, new int[]{20, 30}, 0, 0, new SensorData(), 0, false, false)
                 },
-                // Test case 2: Multiple preferences - David
-                {"Normal pref list", "David", multiplePreferences,
+                // David
+                {"Non-empty pref list", "David", multiplePreferences,
                         new User(3, new int[]{16}, 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 3: Multiple users - no match
+                {"Non-empty pref list but no match", "John", multiplePreferences,
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 4: Non-empty list - empty temperature preferences
+                {"Non-empty pref list but empty temperature preferences", "Jack", new ArrayList<>(Arrays.asList(
+                        new Preference("Jack", 2, Arrays.asList(
+                                "when APO suggest bowling",
+                                "when weather suggest cinema"
+                        )))),
+                        new User(2, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 5: Non-empty list - 1 invalid over 2 temperature preferences
+                // Above Upperbound
+                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(Arrays.asList(
+                        new Preference("Jack", 2, Arrays.asList(
+                                "when APO suggest bowling",
+                                "when 51 suggest shops",
+                                "when 30 suggest pool",
+                                "when weather suggest cinema"
+                        )))),
+                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                },
+                // Below Lower bound
+                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(Arrays.asList(
+                        new Preference("Jack", 2, Arrays.asList(
+                                "when APO suggest bowling",
+                                "when -1 suggest shops",
+                                "when 30 suggest pool",
+                                "when weather suggest cinema"
+                        )))),
+                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                },
+                // Invalid data type
+                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(Arrays.asList(
+                        new Preference("Jack", 2, Arrays.asList(
+                                "when APO suggest bowling",
+                                "when 2.0 suggest shops",
+                                "when 30 suggest pool",
+                                "when weather suggest cinema"
+                        )))),
+                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
                 },
         });
     }
-
-//    @AfterParam
-//    public static void afterParam() throws NoSuchFieldException, IllegalAccessException {
-//        System.out.println("ajkbfjsd");
-//        // Set the actualPreferences field of the PreferenceRepository instance
-//        Field preferencesField = PreferenceRepository.class.getDeclaredField("preferences");
-//        preferencesField.setAccessible(true);
-//        preferencesField.set(preferenceRepository, testPreferences);
-//    }
     @Before
     public void before() throws NoSuchFieldException, IllegalAccessException {
 
@@ -107,7 +138,7 @@ public class PreferenceRepositoryTest {
 
     // ---------------------------------------------
     @Test
-    public void testGetUserInfo() throws Exception {
+    public void testGetUserInfo() {
         PreferenceRepository.PreferenceWorkerI worker = new PreferenceRepository.PreferenceWorkerI();
         User actualUserInfo = worker.getUserInfo(name, null);
         // Use JUnit to compare the actual and expected user info
@@ -118,45 +149,6 @@ public class PreferenceRepositoryTest {
         assertArrayEquals("Temperature thresholds", expectedUserInfo.tempThreshholds, actualUserInfo.tempThreshholds);
         assertEquals("APO threshold", expectedUserInfo.apoThreshhold, actualUserInfo.apoThreshhold);
 
-    }
-
-
-
-    // ---------------------------------------------
-    // only test 1 case because of focusing on the code, instead of text file
-    // more tests will be in integration test between PreferenceRepository and Preference.txt
-    @Test
-    public void testReadPreference() throws Exception {
-        List<Preference> expectedPreferences = new ArrayList<>();
-        expectedPreferences.add(new Preference("Jack", 2, Arrays.asList(
-                "when 20 suggest shops",
-                "when 30 suggest pool",
-                "when APO suggest bowling",
-                "when weather suggest cinema"
-        )));
-        expectedPreferences.add(new Preference("David", 3, Arrays.asList(
-                "when 16 suggest pool",
-                "when APO suggest cinema",
-                "when weather suggest shops"
-        )));
-
-        // Use reflection to access the private readPreference() method
-        Method readPreferenceMethod = PreferenceRepository.class.getDeclaredMethod("readPreference");
-        readPreferenceMethod.setAccessible(true);
-
-        // Invoke the readPreference() method and cast the result to List<Preference>
-        @SuppressWarnings("unchecked")
-        List<Preference> actualPreferences = (List<Preference>) readPreferenceMethod.invoke(preferenceRepository);
-        // Use JUnit to compare the actual and expected preferences
-        assertEquals("Length of the preference list", expectedPreferences.size(), actualPreferences.size());
-        // assert equality of the preference element in the list
-        for (int i = 0; i < expectedPreferences.size(); i++) {
-            Preference expected = expectedPreferences.get(i);
-            Preference actual = actualPreferences.get(i);
-            assertEquals("Preference name in element " + i, expected.getName(), actual.getName());
-            assertEquals("Preference medical condition in element " + i, expected.getMedicalCondition(), actual.getMedicalCondition());
-            assertEquals("Preference suggestions in element " + i, expected.getSuggestions(), actual.getSuggestions());
-        }
     }
 
 }
