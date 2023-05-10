@@ -56,7 +56,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="powermock.api.mockito2" level="project" />
-    <orderEntry type="library" name="powermock.module.junit4" level="project" />
+    <orderEntry type="library" name="mockito.inline" level="project" />
   </component>
 </module>

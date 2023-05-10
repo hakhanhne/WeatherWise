@@ -85,30 +85,28 @@ public class PreferenceRepositoryTest {
 }
 
 
- List<Preference> expectedPreferences = new ArrayList<>();
-        expectedPreferences.add(new Preference("Jack", 2, Arrays.asList(
-                "when 20 suggest shops",
-                "when 30 suggest pool",
-                "when APO suggest bowling",
-                "when weather suggest cinema"
-        )));
-        expectedPreferences.add(new Preference("David", 3, Arrays.asList(
-                "when 16 suggest pool",
-                "when APO suggest cinema",
-                "when weather suggest shops"
-        )));
+        // Mock the static fields of PreferenceRepository class
+        try (MockedStatic<PreferenceRepository> preferenceRepoMock = Mockito.mockStatic(PreferenceRepository.class)) {
+            preferenceRepoMock.when(() -> PreferenceRepository.main(new String[0])).thenReturn(preferences);
 
-        // Create an instance of the class to test
-        PreferenceRepository preferenceRepository = new PreferenceRepository();
+            // Create an instance of the PreferenceRepository.PreferenceWorkerI class
+            PreferenceWorker preferenceWorker = new PreferenceRepository.PreferenceWorkerI();
 
-        // Use reflection to access the private readPreference() method
-        Method readPreferenceMethod = PreferenceRepository.class.getDeclaredMethod("readPreference");
-        readPreferenceMethod.setAccessible(true);
+            // Use reflection to call readPreference() and set it to accessible
+//                Method readPreference = PreferenceRepository.class.getDeclaredMethod("readPreference");
+//                readPreference.setAccessible(true);
+//                Object preference = readPreference.invoke(null);
 
-        // Invoke the readPreference() method and cast the result to List<Preference>
-        List<Preference> actualPreferences = (List<Preference>) Whitebox.invokeMethod(PreferenceRepository.class, "readPreference");
-        System.out.println(actualPreferences.toString());
-        System.out.println("---------------------");
-        System.out.println(expectedPreferences.toString());
+            // Call the getUserInfo() method with a name that matches a preference
+            User result = preferenceWorker.getUserInfo("Jack", mock(Current.class));
 
-        assertEquals("Preference List", expectedPreferences.toString(), actualPreferences.toString());
+            // Verify the result
+            assert(result.medicalConditionType == expectedUserInfo.medicalConditionType);
+            assert(result.tempThreshholds.length == expectedUserInfo.tempThreshholds.length);
+            assert(result.tempThreshholds[0] == expectedUserInfo.tempThreshholds[0]);
+            assert(result.tempThreshholds[1] == expectedUserInfo.tempThreshholds[1]);
+        }
+
+
+        // mock the readPreference method
+                when(mockPreferenceRepository.readPreference()).thenReturn(preferences);

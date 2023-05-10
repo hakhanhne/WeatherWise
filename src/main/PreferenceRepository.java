@@ -46,7 +46,7 @@ public class PreferenceRepository {
 				}
 			}
 			User result = new User(medicalType, tempThreshholds.stream().mapToInt(Integer::intValue).toArray(),
-					apoThreshhold, clock, sensorData, weather, apoReached, tempReached);
+								   apoThreshhold, clock, sensorData, weather, apoReached, tempReached);
 			return result;
 		}
 
@@ -58,8 +58,7 @@ public class PreferenceRepository {
 			String value = request.value;
 			if (value.isEmpty()){
 				result = getSuggestionWeather(username, weather);
-			}
-			else{
+			} else{
 				if (value.equals(APO)) {
 					result = getSuggestionAPO(username);
 				} else {
@@ -67,7 +66,7 @@ public class PreferenceRepository {
 					result = getSuggestionTemp(username, temp);
 				}
 			}
-			
+
 			return result;
 		}
 
@@ -88,7 +87,7 @@ public class PreferenceRepository {
 	private static void setupPreferenceWorker(String[] args) {
 		communicator = com.zeroc.Ice.Util.initialize(args);
 		com.zeroc.Ice.ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("PreferenceWorker",
-				"default -p 14444");
+																							"default -p 14444");
 		adapter.add(new PreferenceWorkerI(), com.zeroc.Ice.Util.stringToIdentity("PreferenceWorker"));
 		adapter.activate();
 	}
@@ -156,7 +155,7 @@ public class PreferenceRepository {
 		}
 		return result;
 	}
-	
+
 	private static String getSuggestionWeather(String name, Integer weather) {
 		String result = null;
 		for (Preference preference : preferences) {
