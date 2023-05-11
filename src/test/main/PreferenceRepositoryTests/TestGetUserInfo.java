@@ -20,7 +20,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestGetUserInfo {
+public class TestGetUserInfo {
 
     // Test inputs for the parameterized test
     @Parameter

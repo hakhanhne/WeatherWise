@@ -14,7 +14,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestReadPreference {
+public class TestReadPreference {
 
     // Test inputs for the parameterized test
     @Parameter

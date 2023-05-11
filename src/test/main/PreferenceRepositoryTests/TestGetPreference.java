@@ -10,8 +10,6 @@ import org.junit.runners.Parameterized;
 import support.Preference;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +30,7 @@ import static org.junit.runners.Parameterized.Parameters;
 // Invalid weather, invalid APO (lowercase apo) (and temp), invalid both weather and temp, invalid name and weather and
 // temp
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestGetPreference {
+public class TestGetPreference {
 
     // Test inputs for the parameterized test
     @Parameter(0)
@@ -74,17 +72,79 @@ public class PreferenceRepositoryTestGetPreference {
 
         return Arrays.asList(new Object[][] {
                 // Test case 1: Empty preferences
-                // valid weather and apoTemp
-                {"Empty pref list - valid request", "Jack", new ArrayList<>(),
-                        2, "35", null
+                // valid request: APO
+                {"Empty pref list - valid request: APO", "Jack",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, new ArrayList<>()))),
+                        0, "APO", null
                 },
-                // invalid weather
-                {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
-                        -1, "35", null
+                // valid request: weather
+                {"Empty pref list - valid request: Weather", "Jack",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, new ArrayList<>()))),
+                        1, "", null
                 },
-                // invalid apoTemp
+                // valid request: temp
+                {"Empty pref list - valid request: temp", "Jack",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, new ArrayList<>()))),
+                        0, "35", null
+                },
+                // valid request: weather and temp
+                {"Empty pref list - valid request: weather and temp", "Jack",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, new ArrayList<>()))),
+                        1, "35", null
+                },
+                // valid request: weather and APO
+                {"Empty pref list - valid request: weather and APO", "Jack",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, new ArrayList<>()))),
+                        1, "APO", null
+                },
+                // invalid request: weather (below lower bound)
                 {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
+                        -1, "", null
+                },
+                // invalid request: weather (above upper bound)
+                {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
+                        6, "", null
+                },
+                // invalid request: weather (just above upper bound)
+                {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
+                        3.0001, "", null
+                },
+                // invalid request: apo request
+                {"Empty pref list - invalid APO request", "Jack", new ArrayList<>(),
+                        0, "RMIT", null
+                },
+                // invalid request: temp (below lower bound)
+                {"Empty pref list - invalid temp request", "Jack", new ArrayList<>(),
+                        0, "-1", null
+                },
+                // invalid request: temp (above upper bound)
+                {"Empty pref list - invalid temp request", "Jack", new ArrayList<>(),
+                        0, "51", null
+                },
+                // invalid request: temp (just above upper bound)
+                {"Empty pref list - invalid temp request", "Jack", new ArrayList<>(),
+                        0, "50.0001", null
+                },
+                // invalid weather and temp request
+                {"Empty pref list - invalid weather and tempApo request", "Jack", new ArrayList<>(),
                         2, "-1", null
+                },
+                // invalid weather and temp request
+                {"Empty pref list - invalid weather and tempApo request", "Jack", new ArrayList<>(),
+                        -1, "-1", null
+                },
+                // invalid weather and APO request
+                {"Empty pref list - invalid weather and tempApo request", "Jack", new ArrayList<>(),
+                        2, "apo", null
+                },
+                // invalid weather and APO request
+                {"Empty pref list - invalid weather and tempApo request", "Jack", new ArrayList<>(),
+                        -1, "RMIT", null
                 },
                 // special character name
                 {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
@@ -99,9 +159,21 @@ public class PreferenceRepositoryTestGetPreference {
                         2, "35", null
                 },
                 // Test case 2: Multiple users
-                // Jack
-                {"Non-empty pref list", "Jack", multiplePreferences,
+                // Jack: weather and temp request
+                {"Non-empty pref list - weather and temp request", "Jack", multiplePreferences,
                         2, "35", "cinema"
+                },
+                // Jack: weather and apo request
+                {"Non-empty pref list - weather and APO request", "Jack", multiplePreferences,
+                        1, "APO", "cinema"
+                },
+                // Jack: weather request
+                {"Non-empty pref list - weather request", "Jack", multiplePreferences,
+                        1, "", "cinema"
+                },
+                // Jack: APO request
+                {"Non-empty pref list - APO request", "Jack", multiplePreferences,
+                        0, "APO", "bowling"
                 },
                 // David
                 {"Non-empty pref list", "David", multiplePreferences,
@@ -365,39 +437,39 @@ public class PreferenceRepositoryTestGetPreference {
                 // Test case 6: Non-empty list - temp threshold with various values
                 // between 2 temp preferences
                 {"Non-empty pref list and temp threshold between 2 temp preferences", "Jack", multiplePreferences,
-                        25, "apo", "shops"
+                        0, "25", "shops"
                 },
                 // below the first temp preference
                 {"Non-empty pref list and temp threshold below the first temp preference", "Jack", multiplePreferences,
-                        15, "apo", null
+                        0, "15", null
                 },
                 // above the final temp preference
                 {"Non-empty pref list and temp threshold above the final temp preference", "Jack", multiplePreferences,
-                        49, "apo", "pool"
+                        0, "49", "pool"
                 },
                 // at the boundary value of the first temp preference
                 {"Non-empty pref list and temp threshold at the boundary value of the first temp preference", "Jack", multiplePreferences,
-                        20, "apo", "shops"
+                        0, "20", "shops"
                 },
                 // at the lower bound
                 {"Non-empty pref list and temp threshold at the lower bound", "Jack", multiplePreferences,
-                        0, "apo", null
+                        0, "0", null
                 },
                 // at the upper bound
                 {"Non-empty pref list and temp threshold at the upper bound", "Jack", multiplePreferences,
-                        50, "apo", "pool"
+                        0, "50", "pool"
                 },
                 // above the upper bound
                 {"Non-empty pref list and temp threshold above the upper bound", "Jack", multiplePreferences,
-                        51, "apo", null
+                        0, "51", null
                 },
                 // below the lower bound
                 {"Non-empty pref list and temp threshold below the lower bound", "Jack", multiplePreferences,
-                        -1, "apo", null
+                        0, "-1", null
                 },
                 // just above the upper bound
                 {"Non-empty pref list and temp threshold just above the upper bound", "Jack", multiplePreferences,
-                        50.0001, "apo", null
+                        0, "50.0001", null
                 },
         });
     }

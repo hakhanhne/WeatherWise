@@ -80,11 +80,6 @@ public class PreferenceRepository {
 
 	public static void main(String[] args) {
 		preferences = readPreference();
-		System.out.println(preferences.size());
-		PreferenceWorkerI workerI = new PreferenceWorkerI();
-		User user = workerI.getUserInfo("Jack", null);
-		System.out.println(user.medicalConditionType + " - " + Arrays.toString(user.tempThreshholds));
-		System.out.println(workerI.getPreference(new PreferenceRequest("Jack", 3, "APO"), null));
 		setupPreferenceWorker(args);
 		communicator.waitForShutdown();
 		System.exit(0);

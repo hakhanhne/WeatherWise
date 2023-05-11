@@ -21,7 +21,7 @@ import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestGetAPOSuggestion {
+public class TestGetAPOSuggestion {
 
     // Test inputs for the parameterized test
     @Parameter(0)

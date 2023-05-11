@@ -1,6 +1,5 @@
 package main.PreferenceRepositoryTests;
 
-import helper.PreferenceRequest;
 import main.PreferenceRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,7 +21,7 @@ import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class PreferenceRepositoryTestGetWeatherSuggestion {
+public class TestGetWeatherSuggestion {
 
     // Test inputs for the parameterized test
     @Parameter(0)
