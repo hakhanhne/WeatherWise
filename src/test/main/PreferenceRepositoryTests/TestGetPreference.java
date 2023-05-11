@@ -179,6 +179,27 @@ public class TestGetPreference {
                 {"Non-empty pref list", "David", multiplePreferences,
                         2, "35", "shops"
                 },
+                // David - APO
+                {"Non-empty pref list - APO request", "David", multiplePreferences,
+                        0, "APO", "cinema"
+                },
+                // David - weather
+                {"Non-empty pref list - weather request", "David", multiplePreferences,
+                        1, "", "shops"
+                },
+                // David - temp only
+                {"Non-empty pref list - temp request", "David", multiplePreferences,
+                        0, "35", "pool"
+                },
+                // David - temp only
+                {"Non-empty pref list - temp request at boundary value of the preference", "David", multiplePreferences,
+                        0, "16", "pool"
+                },
+                // David - temp only
+                {"Non-empty pref list - temp request at boundary value of the allow temperature", "David",
+                        multiplePreferences,
+                        0, "0", null
+                },
                 // Test case 3: Multiple users - no match
                 // non-exist name
                 {"Non-empty pref list but no match", "John", multiplePreferences,

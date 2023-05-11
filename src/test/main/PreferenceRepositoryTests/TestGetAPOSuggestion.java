@@ -62,6 +62,18 @@ public class TestGetAPOSuggestion {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         null
                 },
+                // special character name
+                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
+                        null
+                },
+                // name is null
+                {"Empty pref list - name is null", null, new ArrayList<>(),
+                        null
+                },
+                // name is empty
+                {"Empty pref list - name is empty", "", new ArrayList<>(),
+                        null
+                },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
@@ -73,6 +85,18 @@ public class TestGetAPOSuggestion {
                 },
                 // Test case 3: Multiple users - no match
                 {"Non-empty pref list but no match", "John", multiplePreferences,
+                        null
+                },
+                // name is null
+                {"Non-empty pref list but no match - name is null", null, multiplePreferences,
+                        null
+                },
+                // name is empty
+                {"Non-empty pref list but no match - empty name", "", multiplePreferences,
+                        null
+                },
+                // special character-contain name
+                {"Non-empty pref list but no match - empty name", "\n", multiplePreferences,
                         null
                 },
                 // Test case 4: Non-empty list - empty APO preferences

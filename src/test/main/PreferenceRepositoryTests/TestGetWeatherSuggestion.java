@@ -64,14 +64,46 @@ public class TestGetWeatherSuggestion {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         1, null
                 },
+                // invalid weather threshold
+                {"Empty pref list - invalid weather request below lower bound", "Jack", new ArrayList<>(),
+                        -1, null
+                },
+                // invalid weather threshold
+                {"Empty pref list - invalid weather request above upper bound", "Jack", new ArrayList<>(),
+                        5, null
+                },
+                // special character name
+                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
+                        2, null
+                },
+                // name is null
+                {"Empty pref list - name is null", null, new ArrayList<>(),
+                        2, null
+                },
+                // name is empty
+                {"Empty pref list - name is empty", "", new ArrayList<>(),
+                        2, null
+                },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
                         1, "cinema"
                 },
+                // Jack
+                {"Non-empty pref list", "Jack", multiplePreferences,
+                        2, "cinema"
+                },
                 // David
                 {"Non-empty pref list", "David", multiplePreferences,
                         1, "shops"
+                },
+                // David
+                {"Non-empty pref list", "David", multiplePreferences,
+                        3, "shops"
+                },
+                // David
+                {"Non-empty pref list - no weather warning", "David", multiplePreferences,
+                        0, null
                 },
                 // Test case 3: Multiple users - no match
                 {"Non-empty pref list but no match", "John", multiplePreferences,

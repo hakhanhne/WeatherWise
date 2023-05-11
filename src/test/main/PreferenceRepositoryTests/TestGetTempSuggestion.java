@@ -63,7 +63,7 @@ public class TestGetTempSuggestion {
                         35, null
                 },
                 // invalid temperature threshold
-                {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
+                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
                         -1, null
                 },
                 // special character name
@@ -86,6 +86,14 @@ public class TestGetTempSuggestion {
                 // David
                 {"Non-empty pref list", "David", multiplePreferences,
                         35, "pool"
+                },
+                // David: 0
+                {"Non-empty pref list", "David", multiplePreferences,
+                        0, null
+                },
+                // David: 16
+                {"Non-empty pref list at the boundary value of temp preference", "David", multiplePreferences,
+                        16, null
                 },
                 // Test case 3: Multiple users - no match
                 // non-exist name
