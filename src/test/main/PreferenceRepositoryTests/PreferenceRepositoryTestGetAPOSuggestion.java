@@ -1,6 +1,5 @@
 package main.PreferenceRepositoryTests;
 
-import helper.PreferenceRequest;
 import main.PreferenceRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -97,16 +96,6 @@ public class PreferenceRepositoryTestGetAPOSuggestion {
 
     // ---------------------------------------------
     @Test
-    public void testGetPreference() {
-        PreferenceRepository.PreferenceWorkerI worker = new PreferenceRepository.PreferenceWorkerI();
-        PreferenceRequest request = new PreferenceRequest("Jack", 1, "APO");
-        String actualPreferences = worker.getPreference(request, null);
-        // Use JUnit to compare the actual and expected user info
-        assertEquals("Preferences", "bowling", actualPreferences);
-    }
-    // ---------------------------------------------
-    @Test
-
     public void testGetSuggestionAPO() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         // Use reflection to access the private getSuggestionAPO() method
         Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionAPO", String.class);

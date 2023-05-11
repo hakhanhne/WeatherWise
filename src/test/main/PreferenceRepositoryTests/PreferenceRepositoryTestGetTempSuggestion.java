@@ -62,6 +62,22 @@ public class PreferenceRepositoryTestGetTempSuggestion {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         35, null
                 },
+                // invalid temperature threshold
+                {"Empty pref list - invalid weather request", "Jack", new ArrayList<>(),
+                        -1, null
+                },
+                // special character name
+                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
+                        2, null
+                },
+                // name is null
+                {"Empty pref list - name is null", null, new ArrayList<>(),
+                        2, null
+                },
+                // name is empty
+                {"Empty pref list - name is empty", "", new ArrayList<>(),
+                        2, null
+                },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
@@ -72,7 +88,20 @@ public class PreferenceRepositoryTestGetTempSuggestion {
                         35, "pool"
                 },
                 // Test case 3: Multiple users - no match
-                {"Non-empty pref list but no match", "John", multiplePreferences,
+                // non-exist name
+                {"Non-empty pref list but no match - non-exist name", "John", multiplePreferences,
+                        35, null
+                },
+                // name is null
+                {"Non-empty pref list but no match - name is null", null, multiplePreferences,
+                        35, null
+                },
+                // name is empty
+                {"Non-empty pref list but no match - empty name", "", multiplePreferences,
+                        35, null
+                },
+                // special character-contain name
+                {"Non-empty pref list but no match - empty name", "\n", multiplePreferences,
                         35, null
                 },
                 // Test case 4: Non-empty list - empty temperature preferences
