@@ -58,9 +58,19 @@ public class TestGetTempSuggestion {
                 "when weather suggest shops"
         )));
 
+        List<Preference> emptyTempPreferences = new ArrayList<>(List.of(
+                new Preference("Jack", 2, Arrays.asList(
+                        "when APO suggest bowling",
+                        "when weather suggest cinema"
+                ))));
+
+
         return Arrays.asList(new Object[][] {
                 // Test case 1: Empty preferences
                 {"Empty pref list", "Jack", new ArrayList<>(),
+                        35, null
+                },
+                {"Empty pref list", "David", new ArrayList<>(),
                         35, null
                 },
                 {"Empty pref list", "Jack", new ArrayList<>(),
@@ -70,50 +80,79 @@ public class TestGetTempSuggestion {
                         50, null
                 },
                 // invalid temperature threshold
-                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
+                {"Empty pref list - invalid temp threshold", "Jack", new ArrayList<>(),
                         -1, null
                 },
                 // invalid temperature threshold
-                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
+                {"Empty pref list - invalid temp threshold", "Jack", new ArrayList<>(),
                         51, null
                 },
                 // invalid temperature threshold
-                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
+                {"Empty pref list - invalid temp threshold", "Jack", new ArrayList<>(),
                         5.1, null
                 },
                 // special character name
-                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
-                        2, null
+                {"Empty pref list - special-case name", "\n", new ArrayList<>(),
+                        35, null
                 },
                 // special character name
-                {"Empty pref list - special character-contain name", "_", new ArrayList<>(),
-                        2, null
+                {"Empty pref list - special-case name", "_", new ArrayList<>(),
+                        35, null
                 },
                 // special character name
-                {"Empty pref list - special character-contain name", " ", new ArrayList<>(),
-                        2, null
-                },
-                // name is null
-                {"Empty pref list - name is null", null, new ArrayList<>(),
-                        2, null
+                {"Empty pref list - special-case name", " ", new ArrayList<>(),
+                        35, null
                 },
                 // name is empty
-                {"Empty pref list - name is empty", "", new ArrayList<>(),
-                        2, null
+                {"Empty pref list - special-case name", "", new ArrayList<>(),
+                        35, null
+                },
+                // name is null
+                {"Empty pref list - special-case name", null, new ArrayList<>(),
+                        35, null
                 },
                 // special character name + invalid temp threshold
-                {"Empty pref list - special character-contain name, invalid temperature threshold", "_",
+                {"Empty pref list - special-case name, invalid temp threshold", "_",
                         new ArrayList<>(),
                         -1, null
                 },
-                {"Empty pref list - special character-contain name, invalid temperature threshold", "_",
+                {"Empty pref list - special-case name, invalid temp threshold", "_",
                         new ArrayList<>(),
                         5.1, null
                 },
+                // ------------------------------------------------
                 // Test case 2: Multiple users
                 // Jack
-                {"Non-empty pref list", "Jack", multiplePreferences,
-                        35, "pool"
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        0, null
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        19, null
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        20, "shops"
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        21, "shops"
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        29, "shops"
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        30, "pool"
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        31, "pool"
+                },
+                // Jack
+                {"Non-empty pref list - various temp thresholds", "Jack", multiplePreferences,
+                        50, "pool"
                 },
                 // David
                 {"Non-empty pref list", "David", multiplePreferences,
@@ -127,77 +166,128 @@ public class TestGetTempSuggestion {
                 {"Non-empty pref list - non-matched temperature threshold", "David", multiplePreferences,
                         0, null
                 },
-                // Test case 3: Multiple users - no match
+                // Invalid temp threshold
+                {"Non-empty pref list - invalid temp threshold", "Jack", multiplePreferences,
+                        -1, null
+                },
+                // Invalid temp threshold
+                {"Non-empty pref list - invalid temp threshold", "Jack", multiplePreferences,
+                        5.1, null
+                },
+                // Invalid temp threshold
+                {"Non-empty pref list - invalid temp threshold", "Jack", multiplePreferences,
+                        51, null
+                },
                 // non-exist name
-                {"Non-empty pref list but no match - non-exist name", "John", multiplePreferences,
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        35, null
+                },
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        0, null
+                },
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        50, null
+                },
+                // special character name
+                {"Non-empty pref list - special-case name", "\n", new ArrayList<>(),
+                        35, null
+                },
+                {"Non-empty pref list - special-case name", "_", new ArrayList<>(),
                         35, null
                 },
                 // special character name
-                {"Non-empty pref list - special character-contain name", "_", new ArrayList<>(),
-                        2, null
-                },
-                // special character name
-                {"Non-empty pref list - special character-contain name", " ", new ArrayList<>(),
-                        2, null
-                },
-                // name is null
-                {"Non-empty pref list but no match - name is null", null, multiplePreferences,
+                {"Non-empty pref list - special-case name", " ", new ArrayList<>(),
                         35, null
                 },
                 // name is empty
-                {"Non-empty pref list but no match - empty name", "", multiplePreferences,
+                {"Non-empty pref list - special-case name", "", multiplePreferences,
                         35, null
                 },
-                // special character-contain name
-                {"Non-empty pref list but no match - empty name", "\n", multiplePreferences,
+                // name is null
+                {"Non-empty pref list - special-case name", null, multiplePreferences,
                         35, null
                 },
-                // Test case 4: Non-empty list - empty temperature preferences
-                {"Non-empty pref list but empty temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when weather suggest cinema"
-                        )))),
-                        35, null
-                },
-
-                // Test case 6: Non-empty list - temp threshold with various values
-                // between 2 temp preferences
-                {"Non-empty pref list and temp threshold between 2 temp preferences", "Jack", multiplePreferences,
-                        25, "shops"
-                },
-                // below the first temp preference
-                {"Non-empty pref list and temp threshold below the first temp preference", "Jack", multiplePreferences,
-                        15, null
-                },
-                // above the final temp preference
-                {"Non-empty pref list and temp threshold above the final temp preference", "Jack", multiplePreferences,
-                        49, "pool"
-                },
-                // at the boundary value of the first temp preference
-                {"Non-empty pref list and temp threshold at the boundary value of the first temp preference", "Jack", multiplePreferences,
-                        20, "shops"
-                },
-                // at the lower bound
-                {"Non-empty pref list and temp threshold at the lower bound", "Jack", multiplePreferences,
-                        0, null
-                },
-                // at the upper bound
-                {"Non-empty pref list and temp threshold at the upper bound", "Jack", multiplePreferences,
-                        50, "pool"
-                },
-                // above the upper bound
-                {"Non-empty pref list and temp threshold above the upper bound", "Jack", multiplePreferences,
-                        51, null
-                },
-                // below the lower bound
-                {"Non-empty pref list and temp threshold below the lower bound", "Jack", multiplePreferences,
+                // special character name + invalid temp threshold
+                {"Non-empty pref list - special-case name, invalid temp threshold", "_",
+                        multiplePreferences,
                         -1, null
                 },
-                // just above the upper bound
-                {"Non-empty pref list and temp threshold just above the upper bound", "Jack", multiplePreferences,
-                        50.0001, null
+                {"Non-empty pref list - special-case name, invalid temp threshold", "_",
+                        multiplePreferences,
+                        5.1, null
                 },
+                {"Non-empty pref list - special-case name, invalid temp threshold", "_",
+                        multiplePreferences,
+                        51, null
+                },
+                // Test case 4: Non-empty list - empty temperature preferences
+                {"Non-empty pref list - empty temp pref", "Jack", emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref", "Jack", emptyTempPreferences,
+                        0, null
+                },
+                {"Non-empty pref list - empty temp pref", "Jack", emptyTempPreferences,
+                        50, null
+                },
+                // invalid temp threshold
+                {"Non-empty pref list - empty temp pref, invalid temp threshold", "Jack",
+                        emptyTempPreferences,
+                        -1, null
+                },
+                {"Non-empty pref list - empty temp pref", "Jack", emptyTempPreferences,
+                        5.1, null
+                },
+                {"Non-empty pref list - empty temp pref", "Jack", emptyTempPreferences,
+                        51, null
+                },
+                // non-existed username
+                {"Non-empty pref list - empty temp pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        0, null
+                },
+                {"Non-empty pref list - empty temp pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        50, null
+                },
+                // special character name
+                {"Non-empty pref list - empty temp pref, special-case name", "\n",
+                        emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name", "_",
+                        emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name", " ",
+                        emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name", "",
+                        emptyTempPreferences,
+                        35, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name", null,
+                        emptyTempPreferences,
+                        35, null
+                },
+                // special-case name + invalid temp threshold
+                {"Non-empty pref list - empty temp pref, special-case name, invalid temp threshold", "_",
+                        emptyTempPreferences,
+                        -1, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name, invalid temp threshold", "_",
+                        emptyTempPreferences,
+                        5.1, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name, invalid temp threshold", "_",
+                        emptyTempPreferences,
+                        51, null
+                }
         });
     }
     @Before
