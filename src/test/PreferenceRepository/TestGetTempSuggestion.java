@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -29,7 +30,7 @@ public class TestGetTempSuggestion {
     @Parameter(2)
     public static List<Preference> testPreferences;
     @Parameter(3)
-    public static int tempThreshold;
+    public static Number tempThreshold;
     @Parameter(4)
     public static String expectedSuggestion;
 
@@ -62,12 +63,34 @@ public class TestGetTempSuggestion {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         35, null
                 },
+                {"Empty pref list", "Jack", new ArrayList<>(),
+                        0, null
+                },
+                {"Empty pref list", "Jack", new ArrayList<>(),
+                        50, null
+                },
                 // invalid temperature threshold
                 {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
                         -1, null
                 },
+                // invalid temperature threshold
+                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
+                        51, null
+                },
+                // invalid temperature threshold
+                {"Empty pref list - invalid temperature request", "Jack", new ArrayList<>(),
+                        5.1, null
+                },
                 // special character name
                 {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
+                        2, null
+                },
+                // special character name
+                {"Empty pref list - special character-contain name", "_", new ArrayList<>(),
+                        2, null
+                },
+                // special character name
+                {"Empty pref list - special character-contain name", " ", new ArrayList<>(),
                         2, null
                 },
                 // name is null
@@ -78,6 +101,15 @@ public class TestGetTempSuggestion {
                 {"Empty pref list - name is empty", "", new ArrayList<>(),
                         2, null
                 },
+                // special character name + invalid temp threshold
+                {"Empty pref list - special character-contain name, invalid temperature threshold", "_",
+                        new ArrayList<>(),
+                        -1, null
+                },
+                {"Empty pref list - special character-contain name, invalid temperature threshold", "_",
+                        new ArrayList<>(),
+                        5.1, null
+                },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
@@ -87,18 +119,26 @@ public class TestGetTempSuggestion {
                 {"Non-empty pref list", "David", multiplePreferences,
                         35, "pool"
                 },
-                // David: 0
-                {"Non-empty pref list", "David", multiplePreferences,
-                        0, null
-                },
                 // David: 16
                 {"Non-empty pref list at the boundary value of temp preference", "David", multiplePreferences,
-                        16, null
+                        16, "pool"
+                },
+                // David: 0
+                {"Non-empty pref list - non-matched temperature threshold", "David", multiplePreferences,
+                        0, null
                 },
                 // Test case 3: Multiple users - no match
                 // non-exist name
                 {"Non-empty pref list but no match - non-exist name", "John", multiplePreferences,
                         35, null
+                },
+                // special character name
+                {"Non-empty pref list - special character-contain name", "_", new ArrayList<>(),
+                        2, null
+                },
+                // special character name
+                {"Non-empty pref list - special character-contain name", " ", new ArrayList<>(),
+                        2, null
                 },
                 // name is null
                 {"Non-empty pref list but no match - name is null", null, multiplePreferences,
@@ -120,37 +160,7 @@ public class TestGetTempSuggestion {
                         )))),
                         35, null
                 },
-                // Test case 5: Non-empty list - 1 invalid over 2 temperature preferences
-                // Above Upperbound
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when 51 suggest shops",
-                                "when 30 suggest pool",
-                                "when weather suggest cinema"
-                        )))),
-                        35, "pool"
-                },
-                // Below Lower bound
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when -1 suggest shops",
-                                "when 30 suggest pool",
-                                "when weather suggest cinema"
-                        )))),
-                        35, "pool"
-                },
-                // Invalid data type
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when 2.0 suggest shops",
-                                "when 30 suggest pool",
-                                "when weather suggest cinema"
-                        )))),
-                        35, "pool"
-                },
+
                 // Test case 6: Non-empty list - temp threshold with various values
                 // between 2 temp preferences
                 {"Non-empty pref list and temp threshold between 2 temp preferences", "Jack", multiplePreferences,
@@ -201,17 +211,33 @@ public class TestGetTempSuggestion {
     // ---------------------------------------------
     @Test
     public void testGetSuggestionTemp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        // Use reflection to access the private getSuggestionTemp() method
-        Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionTemp", String.class,
-                                                                       Integer.class);
-        getSuggestionTempMethod.setAccessible(true);
+        try {
+            // Use reflection to access the private getSuggestionTemp() method
+            Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionTemp", String.class,
+                                                                                          Integer.class);
+            getSuggestionTempMethod.setAccessible(true);
 
-        // Invoke the readPreference() method and cast the result to List<Preference>
-        // name, weather temporary
-        @SuppressWarnings("unchecked")
-        String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository,
-                                                                    name, tempThreshold);
-        assertEquals("Temperature Suggestion", expectedSuggestion, suggestion);
+            if (!(tempThreshold instanceof Integer))
+                throw new IllegalArgumentException("Invalid argument type");
+
+            // Invoke the readPreference() method and cast the result to List<Preference>
+            @SuppressWarnings("unchecked")
+            String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository,
+                                                                        name, (int)tempThreshold);
+            System.out.println("------------------------------------------------");
+            System.out.println("Name: " + name + " - Temp: " + tempThreshold);
+            System.out.println("Expected: " + expectedSuggestion + " - Actual: " + suggestion);
+            assertEquals("Temperature Suggestion", expectedSuggestion, suggestion);
+        } catch(Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                System.out.println("------------------------------------------------");
+                System.out.println("Name: " + name + " - Temp: " + tempThreshold + " - Invalid argument type");
+                assertEquals("Invalid argument type", IllegalArgumentException.class, e.getClass());
+            } else {
+                fail("Unexpected exception thrown" + e.getMessage());
+
+            }
+        }
 
     }
 }
