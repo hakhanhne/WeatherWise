@@ -25,19 +25,12 @@ public class GetLocationsByServiceTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        List<ArrayList<String>> expectedLocations = new ArrayList<>();
-        expectedLocations.add(new ArrayList<>() {{add("Vivo City Shopping Centre"); add("Crescent Mall");}});
-        expectedLocations.add(new ArrayList<>() {{add("Vivo City Shopping Centre"); add("Crescent Mall"); add("Dam Sen Parklands"); add("Ho Chi Minh City, Downtown");}});
-        expectedLocations.add(new ArrayList<>() {{add("Vivo City Shopping Centre"); add("Crescent Mall"); add("Dam Sen Parklands"); add("Ho Chi Minh City, Downtown");}});
-        expectedLocations.add(new ArrayList<>() {{add("Vivo City Shopping Centre"); add("Dam Sen Parklands");}});
-        expectedLocations.add(new ArrayList<>() {{add("Vivo City Shopping Centre"); add("Ho Chi Minh City, Downtown");}});
-
         return Arrays.asList(new Object[][]{
-                {"cinema", expectedLocations.get(0)},
-                {"restaurants", expectedLocations.get(1)},
-                {"shops", expectedLocations.get(2)},
-                {"pool", expectedLocations.get(3)},
-                {"bowling", expectedLocations.get(4)}
+                {"cinema", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Crescent Mall"})},
+                {"restaurants", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Crescent Mall", "Dam Sen Parklands", "Ho Chi Minh City, Downtown"})},
+                {"shops", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Crescent Mall", "Dam Sen Parklands", "Ho Chi Minh City, Downtown"})},
+                {"pool", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Dam Sen Parklands"})},
+                {"bowling", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Ho Chi Minh City, Downtown"})}
         });
     }
 
@@ -46,6 +39,7 @@ public class GetLocationsByServiceTest {
         CC_Utils.initCC_Communicator();
         CC_Utils.initCC_CityInfo();
         CC_Utils.initCC_LocationWorker();
+
     }
 
     @Test
