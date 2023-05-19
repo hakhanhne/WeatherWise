@@ -1,5 +1,6 @@
 package utils;
 
+import com.zeroc.Ice.Communicator;
 import main.ContextCoordinator;
 import support.LocationDetails;
 
@@ -9,10 +10,11 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class CC_Utils {
-    public static void initCC_Communicator() throws NoSuchFieldException, IllegalAccessException {
+    public static Communicator initCC_Communicator() throws NoSuchFieldException, IllegalAccessException {
         Field communicator = ContextCoordinator.class.getDeclaredField("communicator");
         communicator.setAccessible(true);
         communicator.set(null, com.zeroc.Ice.Util.initialize());
+        return (Communicator) communicator.get(null);
     }
 
     public static void initCC_LocationWorker() throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -28,6 +30,8 @@ public class CC_Utils {
     }
 
 
+
+
     public static void initWorker(String worker, String iniMethod) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Field f = ContextCoordinator.class.getDeclaredField(worker);
         f.setAccessible(true);
@@ -37,13 +41,13 @@ public class CC_Utils {
     }
 
 
-    public static void initCC_All() throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException  {
+    public static void initCC_AllWorkers() throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException  {
         initCC_Communicator();
         initCC_LocationWorker();
         initCC_PreferenceWorker();
         initCC_WeatherAlarmWorker();
-        runMethod("runWeatherAlarm");
     }
+
     public static Field accessField(String field) throws NoSuchFieldException {
         Field f = ContextCoordinator.class.getDeclaredField(field);
         f.setAccessible(true);

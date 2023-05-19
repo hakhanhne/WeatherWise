@@ -1,12 +1,15 @@
-package ContectCoordinator;
+package ContectCoordinator.CCWorker;
 
 import com.zeroc.Ice.Current;
+import helper.ContextCoordinatorWorker;
 import main.ContextCoordinator;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import support.LocationDetails;
+import utils.CC_Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class SearchInfoTest {
+    static ContextCoordinatorWorker ccW = new ContextCoordinator.ContextCoordinatorWorkerI();
 
     @Parameterized.Parameter
     public String inputName;
@@ -39,20 +43,14 @@ public class SearchInfoTest {
         });
     }
 
-    @Before
-    public void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
-        Method readCityInfo = ContextCoordinator.class.getDeclaredMethod("readCityInfo");
-        readCityInfo.setAccessible(true);
-        List<LocationDetails> cityInfo = (List<LocationDetails>) readCityInfo.invoke(null);
-        Field cityInfoField = ContextCoordinator.class.getDeclaredField("cityInfo");
-        cityInfoField.setAccessible(true);
-        cityInfoField.set(null, cityInfo);
+    @BeforeClass
+    public static void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+        CC_Utils.initCC_CityInfo();
     }
 
     @Test
-    public void testSearchInfo() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException, NoSuchFieldException {
-        Method searchInfo = ContextCoordinator.ContextCoordinatorWorkerI.class.getDeclaredMethod("searchInfo", String.class, Current.class);
-        String actualInfo = (String) searchInfo.invoke(new ContextCoordinator.ContextCoordinatorWorkerI(), inputName, new Current());
+    public void testSearchInfo() throws IllegalArgumentException {
+        String actualInfo = ccW.searchInfo(inputName, null);
         assertEquals(expectedInfo, actualInfo);
     }
 }
