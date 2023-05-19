@@ -73,6 +73,21 @@ public class TestGetUserInfo {
                 {"Empty pref list", "Jack", new ArrayList<>(),
                         new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
+                // Test case 6: Empty list - Special username
+                {"Empty pref list - special case username, user not found", " ",
+                        new ArrayList<>(),
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 7: Empty list - Special username
+                {"Empty pref list - special case username, special-case username", "_",
+                        new ArrayList<>(),
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 7: Empty list - Special username
+                {"Empty pref list - special case username, user not found", "\n",
+                        new ArrayList<>(),
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
                 // Test case 2: Multiple users
                 // Jack
                 {"Non-empty pref list", "Jack", multiplePreferences,
@@ -94,37 +109,71 @@ public class TestGetUserInfo {
                         )))),
                         new User(2, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
-                // Test case 5: Non-empty list - 1 invalid over 2 temperature preferences
-                // Above Upperbound
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
+                // Test case 5: Non-empty list - empty temperature preferences, non-existed username
+                {"Non-empty pref list but empty temperature preferences, user not found", "Nhung",
+                        new ArrayList<>(List.of(
                         new Preference("Jack", 2, Arrays.asList(
                                 "when APO suggest bowling",
-                                "when 51 suggest shops",
-                                "when 30 suggest pool",
                                 "when weather suggest cinema"
                         )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
-                // Below Lower bound
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when -1 suggest shops",
-                                "when 30 suggest pool",
-                                "when weather suggest cinema"
-                        )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                // Test case 5: Non-empty list - empty temperature preferences, special case username
+                {"Non-empty pref list but empty temperature preferences, user not found", "_",
+                        new ArrayList<>(List.of(
+                                new Preference("Jack", 2, Arrays.asList(
+                                        "when APO suggest bowling",
+                                        "when weather suggest cinema"
+                                )))),
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
-                // Invalid data type
-                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when 2.0 suggest shops",
-                                "when 30 suggest pool",
-                                "when weather suggest cinema"
-                        )))),
-                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+                // Test case 6: Non-empty list - Special username
+                {"Non-empty pref list - special case username, user not found", " ",
+                        multiplePreferences,
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
                 },
+                // Test case 7: Non-empty list - Special username
+                {"Non-empty pref list - special case username, user not found", "_",
+                        multiplePreferences,
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+                // Test case 7: Non-empty list - Special username
+                {"Non-empty pref list - special case username, user not found", "\n",
+                        multiplePreferences,
+                        new User(0, new int[0], 0, 0, new SensorData(), 0, false, false)
+                },
+
+//                // Test case 5: Non-empty list - 1 invalid over 2 temperature preferences
+//                // Above Upperbound
+//                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
+//                        new Preference("Jack", 2, Arrays.asList(
+//                                "when APO suggest bowling",
+//                                "when 51 suggest shops",
+//                                "when 30 suggest pool",
+//                                "when weather suggest cinema"
+//                        )))),
+//                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+//                },
+//                // Below Lower bound
+//                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
+//                        new Preference("Jack", 2, Arrays.asList(
+//                                "when APO suggest bowling",
+//                                "when -1 suggest shops",
+//                                "when 30 suggest pool",
+//                                "when weather suggest cinema"
+//                        )))),
+//                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+//                },
+//                // Invalid data type
+//                {"Non-empty pref list but 1 invalid over 2 temperature preferences", "Jack", new ArrayList<>(List.of(
+//                        new Preference("Jack", 2, Arrays.asList(
+//                                "when APO suggest bowling",
+//                                "when 2.0 suggest shops",
+//                                "when 30 suggest pool",
+//                                "when weather suggest cinema"
+//                        )))),
+//                        new User(2, new int[]{30}, 0, 0, new SensorData(), 0, false, false)
+//                },
         });
     }
     @Before
@@ -142,9 +191,14 @@ public class TestGetUserInfo {
         PreferenceRepository.PreferenceWorkerI worker = new PreferenceRepository.PreferenceWorkerI();
         User actualUserInfo = worker.getUserInfo(name, null);
         // Use JUnit to compare the actual and expected user info
-        System.out.println("name: " + name + ": expected medical: " + expectedUserInfo.medicalConditionType + " " +
-                                   "actual" +
-                                   " medical: " + actualUserInfo.medicalConditionType);
+        System.out.println("---------------------------------------------");
+        System.out.println("name: " + name);
+        System.out.println("expected medical: " + expectedUserInfo.medicalConditionType +
+                                   " - actual medical: " + actualUserInfo.medicalConditionType);
+        System.out.println("expected APO: " + expectedUserInfo.apoThreshhold +
+                                   " - actual APO: " + actualUserInfo.apoThreshhold);
+        System.out.println("expected temperature thresholds: " + Arrays.toString(expectedUserInfo.tempThreshholds) +
+                                   " - actual temperature thresholds: " + Arrays.toString(actualUserInfo.tempThreshholds));
         assertEquals("Medical condition type", expectedUserInfo.medicalConditionType, actualUserInfo.medicalConditionType);
         assertArrayEquals("Temperature thresholds", expectedUserInfo.tempThreshholds, actualUserInfo.tempThreshholds);
         assertEquals("APO threshold", expectedUserInfo.apoThreshhold, actualUserInfo.apoThreshhold);

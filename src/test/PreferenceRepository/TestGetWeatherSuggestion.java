@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -31,7 +32,7 @@ public class TestGetWeatherSuggestion {
     @Parameter(2)
     public static List<Preference> testPreferences;
     @Parameter(3)
-    public static int weatherThreshold;
+    public static Number weatherThreshold;
     @Parameter(4)
     public static String expectedSuggestion;
 
@@ -58,86 +59,214 @@ public class TestGetWeatherSuggestion {
                 "when APO suggest cinema",
                 "when weather suggest shops"
         )));
+        List<Preference> emptyTempPreferences = new ArrayList<>(List.of(
+                new Preference("Jack", 2, Arrays.asList(
+                        "when 20 suggest shops",
+                        "when 30 suggest pool",
+                        "when APO suggest bowling"
+                ))));
 
         return Arrays.asList(new Object[][] {
                 // Test case 1: Empty preferences
                 {"Empty pref list", "Jack", new ArrayList<>(),
-                        1, null
+                        2, null
+                },
+                {"Empty pref list", "David", new ArrayList<>(),
+                        2, null
+                },
+                {"Empty pref list", "Jack", new ArrayList<>(),
+                        0, null
+                },
+                {"Empty pref list", "Jack", new ArrayList<>(),
+                        3, null
                 },
                 // invalid weather threshold
-                {"Empty pref list - invalid weather request below lower bound", "Jack", new ArrayList<>(),
+                {"Empty pref list - invalid weather alarm", "Jack", new ArrayList<>(),
                         -1, null
                 },
                 // invalid weather threshold
-                {"Empty pref list - invalid weather request above upper bound", "Jack", new ArrayList<>(),
-                        5, null
+                {"Empty pref list - invalid weather alarm", "Jack", new ArrayList<>(),
+                        4, null
+                },
+                {"Empty pref list - invalid weather alarm", "Jack", new ArrayList<>(),
+                        2.1, null
                 },
                 // special character name
-                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
+                {"Empty pref list - special-case name", "\n", new ArrayList<>(),
                         2, null
                 },
-                // name is null
-                {"Empty pref list - name is null", null, new ArrayList<>(),
+                // special character name
+                {"Empty pref list - special-case name", "_", new ArrayList<>(),
+                        2, null
+                },
+                // special character name
+                {"Empty pref list - special-case name", " ", new ArrayList<>(),
                         2, null
                 },
                 // name is empty
-                {"Empty pref list - name is empty", "", new ArrayList<>(),
+                {"Empty pref list - special-case name", "", new ArrayList<>(),
                         2, null
                 },
+                // name is null
+                {"Empty pref list - special-case name", null, new ArrayList<>(),
+                        2, null
+                },
+                // special character name + invalid weather alarm
+                {"Empty pref list - special-case name, invalid weather alarm", "_",
+                        new ArrayList<>(),
+                        -1, null
+                },
+                {"Empty pref list - special-case name, invalid weather alarm", "_",
+                        new ArrayList<>(),
+                        2.1, null
+                },
+                // ------------------------------------------------
                 // Test case 2: Multiple users
                 // Jack
-                {"Non-empty pref list", "Jack", multiplePreferences,
+                {"Non-empty pref list - various weather alarm", "Jack", multiplePreferences,
+                        0, null
+                },
+                // Jack
+                {"Non-empty pref list - various weather alarm", "Jack", multiplePreferences,
                         1, "cinema"
                 },
                 // Jack
-                {"Non-empty pref list", "Jack", multiplePreferences,
-                        2, "cinema"
-                },
-                // David
-                {"Non-empty pref list", "David", multiplePreferences,
-                        1, "shops"
-                },
-                // David
-                {"Non-empty pref list", "David", multiplePreferences,
-                        3, "shops"
-                },
-                // David
-                {"Non-empty pref list - no weather warning", "David", multiplePreferences,
-                        0, null
-                },
-                // Test case 3: Multiple users - no match
-                {"Non-empty pref list but no match", "John", multiplePreferences,
-                        1, null
-                },
-                // Test case 4: Non-empty list - empty weather preferences
-                {"Non-empty pref list but empty temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when APO suggest bowling",
-                                "when 30 suggest pool"
-                        )))),
-                        1, null
-                },
-                // Test case 5: Non-empty list - temp threshold with various values
-                // at the lower bound
-                {"Non-empty pref list and weather threshold at the lower bound", "Jack", multiplePreferences,
-                        0, null
-                },
-                // at the upper bound
-                {"Non-empty pref list and weather threshold at the upper bound", "Jack", multiplePreferences,
+                {"Non-empty pref list - various weather alarm", "Jack", multiplePreferences,
                         3, "cinema"
                 },
-                // above the upper bound
-                {"Non-empty pref list and weather threshold above the upper bound", "Jack", multiplePreferences,
-                        6, null
+                // Jack
+                {"Non-empty pref list - various weather alarm", "Jack", multiplePreferences,
+                        2, "cinema"
                 },
-                // below the lower bound
-                {"Non-empty pref list and weather threshold below the lower bound", "Jack", multiplePreferences,
+                // David:
+                {"Non-empty pref list at the boundary value of weather alarm", "David", multiplePreferences,
+                        2, "shops"
+                },
+                // David: 0
+                {"Non-empty pref list - non-matched weather alarm", "David", multiplePreferences,
+                        0, null
+                },
+
+                // Invalid weather alarm
+                {"Non-empty pref list - invalid weather alarm", "Jack", multiplePreferences,
                         -1, null
                 },
-                // just above the upper bound
-                {"Non-empty pref list and weather threshold just above the upper bound", "Jack", multiplePreferences,
-                        3.0001, null
+                {"Non-empty pref list - invalid weather alarm", "Jack", multiplePreferences,
+                        2.1, null
                 },
+                {"Non-empty pref list - invalid temp threshold", "Jack", multiplePreferences,
+                        4, null
+                },
+                // non-exist name
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        2, null
+                },
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        0, null
+                },
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences,
+                        3, null
+                },
+                // special character name
+                {"Non-empty pref list - special-case name", "\n", new ArrayList<>(),
+                        2, null
+                },
+                {"Non-empty pref list - special-case name", "_", new ArrayList<>(),
+                        2, null
+                },
+                // special character name
+                {"Non-empty pref list - special-case name", " ", new ArrayList<>(),
+                        2, null
+                },
+                // name is empty
+                {"Non-empty pref list - special-case name", "", multiplePreferences,
+                        2, null
+                },
+                // name is null
+                {"Non-empty pref list - special-case name", null, multiplePreferences,
+                        2, null
+                },
+                // special character name + invalid weather alarm
+                {"Non-empty pref list - special-case name, invalid weather alarm", "_",
+                        multiplePreferences,
+                        -1, null
+                },
+                {"Non-empty pref list - special-case name, invalid weather alarm", "_",
+                        multiplePreferences,
+                        2.1, null
+                },
+                {"Non-empty pref list - special-case name, invalid weather alarm", "_",
+                        multiplePreferences,
+                        4, null
+                },
+                // Test case 4: Non-empty list - empty weather preferences
+                {"Non-empty pref list - empty weather pref", "Jack", emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref", "Jack", emptyTempPreferences,
+                        0, null
+                },
+                {"Non-empty pref list - empty weather pref", "Jack", emptyTempPreferences,
+                        3, null
+                },
+                // invalid weather alarm
+                {"Non-empty pref list - empty weather pref, invalid weather alarm", "Jack",
+                        emptyTempPreferences,
+                        -1, null
+                },
+                {"Non-empty pref list - empty weather pref, invalid weather alarm", "Jack", emptyTempPreferences,
+                        2.1, null
+                },
+                {"Non-empty pref list - empty weather pref, invalid weather alarm", "Jack", emptyTempPreferences,
+                        4, null
+                },
+                // non-existed username
+                {"Non-empty pref list - empty weather pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        0, null
+                },
+                {"Non-empty pref list - empty weather pref, non-exist name", "Nhung",
+                        emptyTempPreferences,
+                        3, null
+                },
+                // special character name
+                {"Non-empty pref list - empty weather pref, special-case name", "\n",
+                        emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref, special-case name", "_",
+                        emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref, special-case name", " ",
+                        emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref, special-case name", "",
+                        emptyTempPreferences,
+                        2, null
+                },
+                {"Non-empty pref list - empty weather pref, special-case name", null,
+                        emptyTempPreferences,
+                        2, null
+                },
+                // special-case name + invalid weather alarm
+                {"Non-empty pref list - empty weather pref, special-case name, invalid weather alarm", "_",
+                        emptyTempPreferences,
+                        -1, null
+                },
+                {"Non-empty pref list - empty weather pref, special-case name, invalid weather alarm", "_",
+                        emptyTempPreferences,
+                        2.1, null
+                },
+                {"Non-empty pref list - empty temp pref, special-case name, invalid temp threshold", "_",
+                        emptyTempPreferences,
+                        4, null
+                }
         });
     }
     @Before
@@ -152,15 +281,33 @@ public class TestGetWeatherSuggestion {
     // ---------------------------------------------
     @Test
     public void testGetSuggestionWeather() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        // Use reflection to access the private readPreference() method
-        Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionWeather", String.class, Integer.class);
-        getSuggestionTempMethod.setAccessible(true);
+        try {
+            // Use reflection to access the private readPreference() method
+            Method getSuggestionTempMethod = PreferenceRepository.class.getDeclaredMethod("getSuggestionWeather", String.class, Integer.class);
+            getSuggestionTempMethod.setAccessible(true);
 
-        // Invoke the readPreference() method and cast the result to List<Preference>
-        // name, weather temporary
-        @SuppressWarnings("unchecked")
-        String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository,
-                                                                    name, weatherThreshold);
-        assertEquals("Weather Suggestion", expectedSuggestion, suggestion);
+            if (!(weatherThreshold instanceof Integer))
+                throw new IllegalArgumentException("Invalid argument type");
+
+            // Invoke the readPreference() method and cast the result to List<Preference>
+            // name, weather temporary
+            @SuppressWarnings("unchecked")
+            String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository,
+                                                                        name, (int)weatherThreshold);
+            System.out.println("------------------------------------------------");
+            System.out.println("Test case name: " + testName);
+            System.out.println("Name: " + name + " - Weather: " + weatherThreshold);
+            System.out.println("Expected: " + expectedSuggestion + " - Actual: " + suggestion);
+            assertEquals("Weather Suggestion", expectedSuggestion, suggestion);
+        } catch(Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                System.out.println("------------------------------------------------");
+                System.out.println("Name: " + name + " - Weather: " + weatherThreshold + " - Invalid argument type");
+                assertEquals("Invalid argument type", IllegalArgumentException.class, e.getClass());
+            } else {
+                fail("Unexpected exception thrown" + e.getMessage());
+
+            }
+        }
     }
 }

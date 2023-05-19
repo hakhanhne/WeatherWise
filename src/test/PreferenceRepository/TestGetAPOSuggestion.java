@@ -56,57 +56,59 @@ public class TestGetAPOSuggestion {
                 "when APO suggest cinema",
                 "when weather suggest shops"
         )));
+        List<Preference> emptyTempPreferences = new ArrayList<>(List.of(
+                new Preference("Jack", 2, Arrays.asList(
+                        "when 20 suggest shops",
+                        "when weather suggest cinema"
+                ))));
+
 
         return Arrays.asList(new Object[][] {
                 // Test case 1: Empty preferences
-                {"Empty pref list", "Jack", new ArrayList<>(),
-                        null
-                },
+                {"Empty pref list", "Jack", new ArrayList<>(), null},
+                {"Empty pref list", "David", new ArrayList<>(), null},
                 // special character name
-                {"Empty pref list - special character-contain name", "\n", new ArrayList<>(),
-                        null
-                },
-                // name is null
-                {"Empty pref list - name is null", null, new ArrayList<>(),
-                        null
-                },
+                {"Empty pref list - special-case name", "\n", new ArrayList<>(), null},
+                // special character name
+                {"Empty pref list - special-case name", "_", new ArrayList<>(), null},
+                // special character name
+                {"Empty pref list - special-case name", " ", new ArrayList<>(), null},
                 // name is empty
-                {"Empty pref list - name is empty", "", new ArrayList<>(),
-                        null
-                },
+                {"Empty pref list - special-case name", "", new ArrayList<>(), null},
+                // name is null
+                {"Empty pref list - special-case name", null, new ArrayList<>(), null},
+
+                // ------------------------------------------------
                 // Test case 2: Multiple users
                 // Jack
-                {"Non-empty pref list", "Jack", multiplePreferences,
-                        "bowling"
-                },
+                {"Non-empty pref list", "Jack", multiplePreferences, "bowling"},
                 // David
-                {"Non-empty pref list", "David", multiplePreferences,
-                        "cinema"
-                },
-                // Test case 3: Multiple users - no match
-                {"Non-empty pref list but no match", "John", multiplePreferences,
-                        null
-                },
-                // name is null
-                {"Non-empty pref list but no match - name is null", null, multiplePreferences,
-                        null
-                },
+                {"Non-empty pref list", "David", multiplePreferences, "cinema"},
+                // non-exist name
+                {"Non-empty pref list but no match - non-exist name", "Nhung", multiplePreferences, null},
+
+                // special character name
+                {"Non-empty pref list - special-case name", "\n", new ArrayList<>(), null},
+                {"Non-empty pref list - special-case name", "_", new ArrayList<>(), null},
+                // special character name
+                {"Non-empty pref list - special-case name", " ", new ArrayList<>(), null},
                 // name is empty
-                {"Non-empty pref list but no match - empty name", "", multiplePreferences,
-                        null
-                },
-                // special character-contain name
-                {"Non-empty pref list but no match - empty name", "\n", multiplePreferences,
-                        null
-                },
+                {"Non-empty pref list - special-case name", "", multiplePreferences, null},
+                // name is null
+                {"Non-empty pref list - special-case name", null, multiplePreferences, null},
+
                 // Test case 4: Non-empty list - empty APO preferences
-                {"Non-empty pref list but empty temperature preferences", "Jack", new ArrayList<>(List.of(
-                        new Preference("Jack", 2, Arrays.asList(
-                                "when 20 suggest shops",
-                                "when 30 suggest pool"
-                        )))),
-                        null
-                }
+                {"Non-empty pref list - empty APO pref", "Jack", emptyTempPreferences, null},
+                {"Non-empty pref list - empty APO pref", "David", emptyTempPreferences, null},
+                // non-existed username
+                {"Non-empty pref list - empty temp pref, non-exist name", "Nhung", emptyTempPreferences, null},
+
+                // special character name
+                {"Non-empty pref list - empty temp pref, special-case name", "\n", emptyTempPreferences, null},
+                {"Non-empty pref list - empty temp pref, special-case name", "_", emptyTempPreferences, null},
+                {"Non-empty pref list - empty temp pref, special-case name", " ", emptyTempPreferences, null},
+                {"Non-empty pref list - empty temp pref, special-case name", "", emptyTempPreferences, null},
+                {"Non-empty pref list - empty temp pref, special-case name", null, emptyTempPreferences, null},
         });
     }
     @Before
@@ -129,6 +131,9 @@ public class TestGetAPOSuggestion {
         // name temporary
         @SuppressWarnings("unchecked")
         String suggestion = (String) getSuggestionTempMethod.invoke(preferenceRepository, name);
+        System.out.println("-------------------------------------------------");
+        System.out.println("Test case name: " + testName + " - " + name);
+        System.out.println("Expected suggestion: " + expectedSuggestion + " - Actual suggestion" + suggestion);
         assertEquals("APO Suggestion", expectedSuggestion, suggestion);
 
     }
