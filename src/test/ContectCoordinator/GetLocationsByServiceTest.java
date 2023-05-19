@@ -1,6 +1,7 @@
 package ContectCoordinator;
 import main.ContextCoordinator;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -8,13 +9,15 @@ import utils.CC_Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+    Run LocationServer before running this test class
+ */
 @RunWith(Parameterized.class)
 public class GetLocationsByServiceTest {
     @Parameterized.Parameter
@@ -34,12 +37,11 @@ public class GetLocationsByServiceTest {
         });
     }
 
-    @Before
-    public void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+    @BeforeClass
+    public static void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         CC_Utils.initCC_Communicator();
         CC_Utils.initCC_CityInfo();
         CC_Utils.initCC_LocationWorker();
-
     }
 
     @Test
