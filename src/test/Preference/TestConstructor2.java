@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class TestConstructor2 {
     private Preference testPreference;
-    private List<String> testStringList;
 
     @Parameter
     public static String testName;
@@ -25,7 +24,7 @@ public class TestConstructor2 {
     public List<String> suggestions;
 
 
-    @Parameters
+    @Parameters(name = "{index}: {0} {1}")
     public static Collection<Object[]> testPreferences() {
         return Arrays.asList(new Object[][]{
                 {"Positive Case", "Jack", 2, Arrays.asList("when 20 suggest pool", "when 30 suggest pool",
@@ -46,6 +45,7 @@ public class TestConstructor2 {
 
     @Before
     public void setUp() {
+        List<String> testStringList;
         testStringList = new ArrayList<>();
         testStringList.add("name: " + name);
         testStringList.add("Medical Condition Type: " + medicalCondition);
@@ -56,16 +56,19 @@ public class TestConstructor2 {
     @Test
     public void testGetNameShouldReturnName() {
         String actualName = testPreference.getName();
+        System.out.println("Expected name: " + this.name + ", actual name: " + actualName);
         assertEquals("Preference's Name", this.name, actualName);
     }
     @Test
     public void testGetMedicalConditionShouldReturnMedicalCondition() {
         Integer actualMedicalCondition = testPreference.getMedicalCondition();
+        System.out.println("Expected medical condition: " + this.medicalCondition + ", actual medical condition: " + actualMedicalCondition);
         assertEquals("Preference's medical condition", medicalCondition, actualMedicalCondition);
     }
     @Test
     public void testGetSuggestionsShouldReturnSuggestionList() {
         List<String> actualSuggestions = testPreference.getSuggestions();
+        System.out.println("Expected suggestion list: " + this.suggestions + ", actual suggestion list: " + actualSuggestions);
         assertEquals("Preference's suggestion list size", this.suggestions.size(), actualSuggestions.size());
         assertEquals("Preference's suggestion list content", this.suggestions, actualSuggestions);
     }
@@ -73,6 +76,7 @@ public class TestConstructor2 {
     public void testToString() {
         String expectedString = "Preference [name="+ name +", medical condition="+ medicalCondition
                 +", suggestions=" + suggestions + "]";
+        System.out.println("Expected string: " + expectedString + ", actual string: " + testPreference.toString());
         assertEquals("Preference's content as string", expectedString, testPreference.toString());
     }
 
@@ -80,6 +84,7 @@ public class TestConstructor2 {
     public void testSetName() {
         String newName = "newName";
         testPreference.setName(newName);
+        System.out.println("Expected name: " + newName + ", actual name: " + testPreference.getName());
         assertEquals("Preference's name setter", newName, testPreference.getName());
     }
 
