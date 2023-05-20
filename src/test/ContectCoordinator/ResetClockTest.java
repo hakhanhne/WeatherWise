@@ -29,7 +29,9 @@ public class ResetClockTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"Jack", 13, 0},
-                {"Jack", 20, 0}
+                {"Jack", 20, 0},
+                {"Jack", 0, 0},
+                {"Jack", -1, 0},
         });
     }
 
@@ -52,6 +54,10 @@ public class ResetClockTest {
         LinkedHashMap<String, User> usersAfter = (LinkedHashMap<String, User>) usersField.get(null);
 
         assertEquals(expectedAfterReset, usersAfter.get(username).clock);
+
+        System.out.println("Before reset: " + beforeReset);
+        System.out.println("Expected after reset: " + expectedAfterReset);
+        System.out.println("Actual after reset: " + usersAfter.get(username).clock + "\n");
     }
 
 }

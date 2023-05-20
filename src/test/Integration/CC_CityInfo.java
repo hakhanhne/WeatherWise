@@ -1,4 +1,4 @@
-package Integration.modules_with_files;
+package Integration;
 
 import main.ContextCoordinator;
 import org.junit.Before;
