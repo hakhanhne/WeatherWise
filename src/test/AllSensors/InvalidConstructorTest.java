@@ -23,7 +23,7 @@ public class InvalidConstructorTest {
 
     @Parameterized.Parameters(name = "{index}: invalidUsername={0}")
     public static Collection<String> data() {
-        return Arrays.asList("abc", "anna", "RMIT", "\r", "n", "", " ", "+++");
+        return Arrays.asList("siuu", "THE KING", "Sunday", "\t", "h", "", " ", "2131", "*_*");
     }
 
     @Test(expected = FileNotFoundException.class)
