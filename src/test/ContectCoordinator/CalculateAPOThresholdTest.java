@@ -21,7 +21,6 @@ public class CalculateAPOThresholdTest {
 
     @Parameterized.Parameter(1)
     public int aqi;
-
     @Parameterized.Parameter(2)
     public Integer expectedAPOThreshold;
 

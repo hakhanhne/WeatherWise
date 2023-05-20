@@ -1,6 +1,7 @@
 package Preference;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,16 +54,19 @@ public class TestConstructor1 {
     @Test
     public void testGetNameShouldReturnName() {
         String actualName = testPreference.getName();
+        System.out.println("Expected name: " + this.name + ", actual name: " + actualName);
         assertEquals("Preference's Name", this.name, actualName);
     }
     @Test
     public void testGetMedicalConditionShouldReturnMedicalCondition() {
         Integer actualMedicalCondition = testPreference.getMedicalCondition();
+        System.out.println("Expected medical condition: " + this.medicalCondition + ", actual medical condition: " + actualMedicalCondition);
         assertEquals("Preference's medical condition", medicalCondition, actualMedicalCondition);
     }
     @Test
     public void testGetSuggestionsShouldReturnSuggestionList() {
         List<String> actualSuggestions = testPreference.getSuggestions();
+        System.out.println("Expected suggestion list: " + this.suggestions + ", actual suggestion list: " + actualSuggestions);
         assertEquals("Preference's suggestion list size", this.suggestions.size(), actualSuggestions.size());
         assertEquals("Preference's suggestion list content", this.suggestions, actualSuggestions);
     }
@@ -70,6 +74,7 @@ public class TestConstructor1 {
     public void testToString() {
         String expectedString = "Preference [name="+ name +", medical condition="+ medicalCondition
                 +", suggestions=" + suggestions + "]";
+        System.out.println("Expected string: " + expectedString + ", actual string: " + testPreference.toString());
         assertEquals("Preference's content as string", expectedString, testPreference.toString());
     }
 
@@ -77,6 +82,7 @@ public class TestConstructor1 {
     public void testSetName() {
         String newName = "newName";
         testPreference.setName(newName);
+        System.out.println("Expected name: " + newName + ", actual name: " + testPreference.getName());
         assertEquals("Preference's name setter", newName, testPreference.getName());
     }
 }
