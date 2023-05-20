@@ -29,7 +29,9 @@ public class TickClockTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"Jack", 0, 1},
-                {"Jack", 50, 51}
+                {"Jack", 50, 51},
+                {"Jack", -1, 0},
+                {"Jack", 20, 21},
         });
     }
 
@@ -52,6 +54,10 @@ public class TickClockTest {
         LinkedHashMap<String, User> usersAfter = (LinkedHashMap<String, User>) usersField.get(null);
 
         assertEquals(expectedAfterTick, usersAfter.get(username).clock);
+
+        System.out.println("Before reset: " + beforeTick);
+        System.out.println("Expected after reset: " + expectedAfterTick);
+        System.out.println("Actual after reset: " + usersAfter.get(username).clock + "\n");
     }
 
 }
