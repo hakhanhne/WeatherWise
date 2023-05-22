@@ -52,6 +52,11 @@ public class ContextCoordinator {
 			String currentLocationStatus = locationWorker.locationMapping(sensorData.location);
 			int previousaqi = user.sensorData.aqi;
 			int previousTemperature = user.sensorData.temperature;
+			// Integration testing between AllSensors and CM, please command out if you need to test
+//			System.out.println("Prior Aqi delivered from aqi sensor to CC: "+ previousaqi);
+//			System.out.println("Prior Temperature delivered from aqi sensor to CC: "+ previousTemperature);
+//			System.out.println("Prior Location delivered from aqi sensor to CC " + previouslocationStatus + "- " + currentLocationStatus);
+
 			user.sensorData = sensorData;
 
 			if (previouslocationStatus.equals(OUTDOOR) && currentLocationStatus.equals(INDOOR)) {
