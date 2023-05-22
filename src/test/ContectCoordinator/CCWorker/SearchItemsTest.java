@@ -1,14 +1,17 @@
-package ContectCoordinator;
+package ContectCoordinator.CCWorker;
 
 import com.zeroc.Ice.Current;
+import helper.ContextCoordinatorWorker;
 import helper.SensorData;
 import helper.User;
 import main.ContextCoordinator;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import support.LocationDetails;
+import utils.CC_Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class SearchItemsTest {
+    static ContextCoordinatorWorker ccW = new ContextCoordinator.ContextCoordinatorWorkerI();
 
     @Parameterized.Parameter
     public String givenUsername;
@@ -35,26 +39,21 @@ public class SearchItemsTest {
         return Arrays.asList(new Object[][]{
                 {"Jack", "A", new String[] {"Vivo City Shopping Centre"}},
                 {"Jack", "B", new String[] {"Crescent Mall"}},
-                {"Jack", "C", new String[] {"Dam Sen Parklands"}},
-                {"Jack", "D", new String[] {"Ho Chi Minh City, Downtown"}},
+                {"David", "C", new String[] {"Dam Sen Parklands"}},
+                {"David", "D", new String[] {"Ho Chi Minh City, Downtown"}},
                 {"Jack", "", new String[] {}},
                 {"Jack", null, new String[] {}},
 
         });
     }
 
-    @Before
-    public void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
-        Method readCityInfo = ContextCoordinator.class.getDeclaredMethod("readCityInfo");
-        readCityInfo.setAccessible(true);
-        List<LocationDetails> cityInfo = (List<LocationDetails>) readCityInfo.invoke(null);
-        Field cityInfoField = ContextCoordinator.class.getDeclaredField("cityInfo");
-        cityInfoField.setAccessible(true);
-        cityInfoField.set(null, cityInfo);
+    @BeforeClass
+    public static void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+        CC_Utils.initCC_CityInfo();
     }
 
     @Test
-    public void testSearchItems() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException, NoSuchFieldException {
+    public void testSearchItems() throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException {
         User user = new User();
         user.sensorData.username = givenUsername;
         user.sensorData.location = givenLocation;
@@ -65,8 +64,7 @@ public class SearchItemsTest {
         usersField.setAccessible(true);
         usersField.set(null, users);
 
-        Method searchItems = ContextCoordinator.ContextCoordinatorWorkerI.class.getDeclaredMethod("searchItems", String.class, Current.class);
-        String[] actualItems = (String[]) searchItems.invoke(new ContextCoordinator.ContextCoordinatorWorkerI(), givenUsername, new Current());
+        String[] actualItems = ccW.searchItems(givenUsername, null);
         assertEquals(expectedItems, actualItems);
     }
 }

@@ -38,14 +38,10 @@ public class InvalidSensorConstructorTest {
 
     @Before
     public void setUp() throws FileNotFoundException {
-        try {
-            sensor = new Sensor(invalidName, invalidType);
-        } catch (IllegalArgumentException | NoSuchElementException e) {
-            throw new FileNotFoundException("Invalid input: " + e.getMessage());
-        }
+        sensor = new Sensor(invalidName, invalidType);
     }
 
-    @Test
+    @Test(expected = FileNotFoundException.class)
     public void testInvalidSensorConstructor() {
         String name = invalidName;
         String type = invalidType;
