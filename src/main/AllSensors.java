@@ -72,9 +72,17 @@ public class AllSensors {
 	}
 
 	private SensorData getSensorData() {
+		// Print out location data for integration testing, please command out if you need to test
 		String location = this.locationSensor.getCurrentValue();
+//		System.out.printf("Location value from predefined file %s%n", location);
+
+		// Print out temperature data for integration testing, please command out if you need to test
 		int temperature = Integer.parseInt(this.temperatureSensor.getCurrentValue());
+//		System.out.printf("Temperature value from predefined file %s%n", temperature);
+
+		// Print out AQI data for integration testing, please command out if you need to test
 		int uvr = Integer.parseInt(this.aqiSensor.getCurrentValue());
+//		System.out.printf("AQI value from predefined file %s%n", uvr);
 		SensorData data = new SensorData(this.username, location, temperature, uvr);
 		return data;
 	}
