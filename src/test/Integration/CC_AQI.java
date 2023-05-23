@@ -55,7 +55,6 @@ public class CC_AQI {
         ccW.addUser("David", null);
     }
 
-    @Before
 
     @Test
     public void test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {

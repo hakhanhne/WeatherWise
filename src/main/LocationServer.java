@@ -22,7 +22,7 @@ public class LocationServer {
 		@Override
 		public void terminate(Current current) {
 			communicator.shutdown();
-			System.out.println("Location Server has terminated!");
+//			System.out.println("Location Server has terminated!");
 		}
 
 	}
