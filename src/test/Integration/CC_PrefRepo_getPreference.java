@@ -88,14 +88,21 @@ public class CC_PrefRepo_getPreference {
                 {"empty preference - only APO warning", emptyPreferences, "Jack", 0, "APO", ""},
                 // weather and APO
                 {"multiple preferences - weather + APO", multiplePreferences, "Jack", 2, "APO", "cinema"},
+                {"multiple preferences - weather + APO", multiplePreferences, "Nhung", 2, "APO", ""},
                 {"empty preferences - weather + APO", emptyPreferences, "Jack", 2, "APO", ""},
                 // only temp
                 {"multiple preferences - only temp warning - 25", multiplePreferences, "Jack", 0, "25", "shops"},
                 {"multiple preferences - only temp warning - 35", multiplePreferences, "Jack", 0, "35", "pool"},
+                {"multiple preferences - only temp warning - 35", multiplePreferences, "Nhung", 0, "35", ""},
                 {"empty preference - only temp warning", emptyPreferences, "Jack", 0, "25", ""},
                 // weather and temp
                 {"multiple preferences - weather + temp", multiplePreferences, "Jack", 2, "25", "cinema"},
+                {"multiple preferences - weather + temp", multiplePreferences, "Nhung", 2, "25", ""},
                 {"empty preferences - weather + temp", emptyPreferences, "Jack", 2, "25", ""},
+                // Empty request
+                {"multiple preferences - empty request", multiplePreferences, "Jack", 0, "", ""},
+                {"multiple preferences - empty request", multiplePreferences, "Nhung", 0, "", ""},
+                {"empty preferences", emptyPreferences, "Jack", 0, "", ""},
         });
     }
 
@@ -115,6 +122,9 @@ public class CC_PrefRepo_getPreference {
             NoSuchMethodException {
         PreferenceRequest preferenceRequest = new PreferenceRequest(name, weather, apoTemp);
         String actualPreference = prx.getPreference(preferenceRequest);
+        System.out.println("----------------------------");
+        System.out.println(testName);
+        System.out.println("Expected: " + expectedPreference + " - Actual: " + actualPreference);
         assertEquals("Expected suggestion: ", expectedPreference, actualPreference);
 
     }
