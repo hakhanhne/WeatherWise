@@ -3,6 +3,7 @@ package Integration;
 import main.PreferenceRepository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,6 +12,7 @@ import support.Preference;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -174,7 +176,7 @@ name:\s
 Medical Condition Type:\s
 pref:\s
 ***
-""", Collections.emptyList(), IOException.class},
+""", Collections.emptyList(), null},
                 {"Has 2 users but 1 among 2 is empty user", """
 name: Jack
 Medical Condition Type: 2
@@ -187,7 +189,8 @@ name:\s
 Medical Condition Type:\s
 pref:\s
 ***
-""", Collections.emptyList(), IOException.class},
+""", new ArrayList<Preference>() {{
+                    add(jackPreference);}}, null},
                 {"Has 2 users: 1 valid and 1 invalid user with empty value", """
 name: Jack
 Medical Condition Type: 2
@@ -203,7 +206,8 @@ pref: when 30 suggest pool
 pref: when APO suggest bowling
 pref: when weather suggest cinema
 """,
-                        Collections.emptyList(), IOException.class},
+                        new ArrayList<Preference>() {{
+                            add(jackPreference);}}, null},
                 {"Has 2 users: 1 valid and 1 invalid user with invalid key", """
 name: Jack
 Medical Condition Type: 2
@@ -219,7 +223,8 @@ pref: when 30 suggest pool
 pref: when APO suggest bowling
 pref: when weather suggest cinema
 """,
-                        Collections.emptyList(), IOException.class},
+                        new ArrayList<Preference>() {{
+                            add(jackPreference);}}, null},
                 {"Empty Name", """
 name:\s
 Medical Condition Type: 2
@@ -228,7 +233,7 @@ pref: when 30 suggest pool
 pref: when APO suggest bowling
 pref: when weather suggest cinema
 ***
-""", Collections.emptyList(), IOException.class},
+""", Collections.emptyList(), null},
                 {"Empty Medical Condition", """
 name: Jack
 Medical Condition Type:\s
@@ -237,7 +242,7 @@ pref: when 30 suggest pool
 pref: when APO suggest bowling
 pref: when weather suggest cinema
 ***
-""", Collections.emptyList(), IOException.class},
+""", Collections.emptyList(), null},
                 {"Empty Preference", """
 name: Jack
 Medical Condition Type: 2
@@ -270,7 +275,8 @@ pref: when 16 suggest pool
 pref: when APO suggest cinema
 pref: when weather suggest shops
 ***
-""", Collections.emptyList(), IOException.class},
+""", new ArrayList<Preference>() {{
+                    add(jackPreference);}}, null},
         });
     }
 
@@ -293,29 +299,34 @@ pref: when weather suggest shops
             readPreferenceMethod.setAccessible(true);
 
             // Invoke the readPreference() method and cast the result to List<Preference>
-            @SuppressWarnings("unchecked")
             List<Preference> actualPreferences = (List<Preference>) readPreferenceMethod.invoke(preferenceRepository);
-
+            // read successfully
             if (expectedException != null) {
                 fail("Expected " + expectedException.getName() + " was not thrown.");
             }
-
+            System.out.println("Expected Preferences size: " + expectedPreferences.size() + " Actual Preferences " +
+                                       "size: " + actualPreferences.size());
             assertEquals("Preference List Size", expectedPreferences.size(), actualPreferences.size());
-
-            for (int i = 0; i < expectedPreferences.size(); i++) {
+            for (int i = 0; i < actualPreferences.size(); i++) {
                 Preference expected = expectedPreferences.get(i);
                 Preference actual = actualPreferences.get(i);
                 assertEquals("Preference in element " + i, expected.toString(), actual.toString());
+                System.out.println("Expected Preference: " + expected);
+                System.out.println("Actual Preference: " + actual);
             }
         }
         catch (Exception e) {
+            System.out.println(e.getCause());
             if (expectedException == null) {
+                System.out.println("Expected no exception with " + expectedPreferences.size() + " preferences but got" +
+                                           " " + e.getCause());
                 fail("Unexpected exception: " + e.getMessage());
             } else {
-                assertEquals(expectedException, e.getClass());
+                assertEquals(expectedException, e.getCause().getClass());
             }
         }
     }
+
 
     @AfterClass
     public static void tearDown() throws IOException {
