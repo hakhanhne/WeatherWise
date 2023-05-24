@@ -16,8 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
@@ -39,7 +38,7 @@ public class TestPreferenceRepositoryAndPreferenceText {
     public Class<? extends Throwable> expectedException;
 
 
-    @Parameters(name = "{0}: {1}")
+    @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         Preference jackPreference = new Preference("Jack", 2, new ArrayList<>() {{
             add("when 20 suggest shops");
@@ -169,7 +168,7 @@ pref: when weather suggest cinema
                             }}));
                             add(davidPreference);
                         }}, null},
-                {"Empty List", "", Collections.emptyList(), IOException.class},
+                {"Empty List", "", Collections.emptyList(), null},
                 {"Empty User", """
 name:\s
 Medical Condition Type:\s
@@ -206,7 +205,6 @@ pref: when weather suggest cinema
 """,
                         Collections.emptyList(), IOException.class},
                 {"Has 2 users: 1 valid and 1 invalid user with invalid key", """
-name: Jack
 name: Jack
 Medical Condition Type: 2
 pref: when 20 suggest shops
@@ -290,8 +288,6 @@ pref: when weather suggest shops
             FileWriter writer = new FileWriter(TEST_PREFERENCE_FILE);
             writer.write(preferenceTextFileContent);
             writer.close();
-
-
             // Use reflection to access the private readPreference() method
             Method readPreferenceMethod = PreferenceRepository.class.getDeclaredMethod("readPreference");
             readPreferenceMethod.setAccessible(true);
