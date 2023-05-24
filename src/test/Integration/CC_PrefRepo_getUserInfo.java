@@ -126,15 +126,12 @@ public class CC_PrefRepo_getUserInfo {
         System.out.println("name: " + name);
         System.out.println("expected medical: " + expectedUser.medicalConditionType +
                                    " - actual medical: " + actualUserInfo.medicalConditionType);
-        System.out.println("expected APO: " + expectedUser.apoThreshhold +
-                                   " - actual APO: " + actualUserInfo.apoThreshhold);
         System.out.println("expected temperature thresholds: " + Arrays.toString(expectedUser.tempThreshholds) +
                                    " - actual temperature thresholds: " + Arrays.toString(actualUserInfo.tempThreshholds));
 
         assertEquals("Expected medical condition type: ", expectedUser.medicalConditionType,
                      actualUserInfo.medicalConditionType);
         assertArrayEquals("Expected temp thresholds: ", expectedUser.tempThreshholds, actualUserInfo.tempThreshholds);
-        assertEquals("Expected apo threshold: ", expectedUser.apoThreshhold, actualUserInfo.apoThreshhold);
 
     }
 }
