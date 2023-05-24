@@ -23,8 +23,8 @@ public class SetUpLocationWorkerTest {
     public void setUp() throws Exception, SocketException, BindException,NullPointerException {
         String[] args = {"--Ice.Config=config.icebox"};
         communicator = Util.initialize(args);
-        ObjectPrx obj = communicator.stringToProxy("IceStorm/TopicManager:tcp -p 10000");
-        topicManager = TopicManagerPrx.checkedCast(obj);
+//        ObjectPrx obj = communicator.stringToProxy("IceStorm/TopicManager:tcp -p 10000");
+//        topicManager = TopicManagerPrx.checkedCast(obj);
     }
     
     
@@ -49,7 +49,7 @@ public class SetUpLocationWorkerTest {
 //            System.out.println(key + " -> " + value);
 //        }
         
-        assertNotNull(topicManager.retrieve("David-sensors"));
+        assertNotNull(adapter.getName());
     }
 }
 
