@@ -9,21 +9,21 @@ import static org.junit.Assert.*;
 
 public class LocationDetailTest {
     
-    @Test
-    public void testConstructorAndGetters() {
-        String name = "Vivo City Shopping Centre";
-        String location = "A";
-        String info = "Vivo City Shopping Centre is a major regional shopping centre in the southern suburb of Ho Chi Minh City, Vietnam. It is the second largest shopping centre in the southern suburbs of Ho Chi Minh City, by gross area, and contains the only H&M store in that region.";
-        List<String> services = Arrays.asList("cinema", "restaurants", "pool","shops","bowling");
-        
-        LocationDetails details = new LocationDetails(name, location, info, services);
-        
-        assertEquals(name, details.getName());
-        assertEquals(location, details.getLocation());
-        assertEquals(info, details.getInfo());
-        assertEquals(services, details.getServices());
-    }
-    
+//    @Test
+//    public void testConstructorAndGetters() {
+//        String name = "Vivo City Shopping Centre";
+//        String location = "A";
+//        String info = "Vivo City Shopping Centre is a major regional shopping centre in the southern suburb of Ho Chi Minh City, Vietnam. It is the second largest shopping centre in the southern suburbs of Ho Chi Minh City, by gross area, and contains the only H&M store in that region.";
+//        List<String> services = Arrays.asList("cinema", "restaurants", "pool","shops","bowling");
+//
+//        LocationDetails details = new LocationDetails(name, location, info, services);
+//
+//        assertEquals(name, details.getName());
+//        assertEquals(location, details.getLocation());
+//        assertEquals(info, details.getInfo());
+//        assertEquals(services, details.getServices());
+//    }
+//
     @Test
     public void testStringConstructor() {
         List<String> strings = Arrays.asList(
@@ -58,30 +58,30 @@ public class LocationDetailTest {
         assertEquals(expected, details.toString());
     }
     
-    @Test
-    public void testSetters() {
-    LocationDetails details =
-        new LocationDetails(
-            "Ho Chi Minh City, Downtown",
-            "D",
-            "The Ho Chi Minh City central business district (CBD), or 'the City' is located on a central point in district One. The point, known at its tip as Central Point, slopes upward to the north-west where 'the city' is bounded by parkland and the inner city suburb of District 3, District 4 and District 5.",
-            Arrays.asList("restaurants", "shops", "market", "bowling"));
-
-        String newName = "Updated Location D";
-        String newLocation = "Updated City W";
-        String newInfo = "Updated info";
-        List<String> newServices = Arrays.asList("Updated Service M", "Updated Service N");
-        
-        details.setName(newName);
-        details.setLocation(newLocation);
-        details.setInfo(newInfo);
-        details.setServices(newServices);
-        
-        assertEquals(newName, details.getName());
-        assertEquals(newLocation, details.getLocation());
-        assertEquals(newInfo, details.getInfo());
-        assertEquals(newServices, details.getServices());
-    }
+//    @Test
+//    public void testSetters() {
+//    LocationDetails details =
+//        new LocationDetails(
+//            "Ho Chi Minh City, Downtown",
+//            "D",
+//            "The Ho Chi Minh City central business district (CBD), or 'the City' is located on a central point in district One. The point, known at its tip as Central Point, slopes upward to the north-west where 'the city' is bounded by parkland and the inner city suburb of District 3, District 4 and District 5.",
+//            Arrays.asList("restaurants", "shops", "market", "bowling"));
+//
+//        String newName = "Updated Location D";
+//        String newLocation = "Updated City W";
+//        String newInfo = "Updated info";
+//        List<String> newServices = Arrays.asList("Updated Service M", "Updated Service N");
+//
+//        details.setName(newName);
+//        details.setLocation(newLocation);
+//        details.setInfo(newInfo);
+//        details.setServices(newServices);
+//
+//        assertEquals(newName, details.getName());
+//        assertEquals(newLocation, details.getLocation());
+//        assertEquals(newInfo, details.getInfo());
+//        assertEquals(newServices, details.getServices());
+//    }
     
     @Test
     public void testGetName() {

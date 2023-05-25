@@ -40,13 +40,13 @@ public class VolumeTest {
         readData("Temperature");
         readData("AQI");
 
-        Instant finish = Instant.now();
+        Instant end = Instant.now();
 
-        long timeElapsed = Duration.between(start, finish).toMillis();
+        long totalTime = Duration.between(start, end).toMillis();
 
-        System.out.println("Total duration of running all sensors: " + timeElapsed);
+        System.out.println("Total duration of running all sensors: " + totalTime);
 
-        assertTrue("Total duration of running all sensors", timeElapsed < 5000);
+        assertTrue("Total duration of running all sensors", totalTime < 1000);
     }
 
     @Test
@@ -56,12 +56,12 @@ public class VolumeTest {
 
         readData("Location");
 
-        Instant finish = Instant.now();
+        Instant end = Instant.now();
 
-        long timeElapsed = Duration.between(start, finish).toMillis();
+        long totalTime = Duration.between(start, end).toMillis();
 
-        System.out.println("Total duration of location: " + timeElapsed);
-        assertTrue("Total duration of location", timeElapsed < 5000);
+        System.out.println("Total duration of location: " + totalTime);
+        assertTrue("Total duration of location", totalTime < 1000);
     }
 
     @Test
@@ -71,12 +71,12 @@ public class VolumeTest {
 
         readData("Temperature");
 
-        Instant finish = Instant.now();
+        Instant end = Instant.now();
 
-        long timeElapsed = Duration.between(start, finish).toMillis();
+        long totalTime = Duration.between(start, end).toMillis();
 
-        System.out.println("Total duration of temperature: " + timeElapsed);
-        assertTrue("Total duration of temperature", timeElapsed < 5000);
+        System.out.println("Total duration of temperature: " + totalTime);
+        assertTrue("Total duration of temperature", totalTime < 1000);
     }
 
     @Test
@@ -86,12 +86,12 @@ public class VolumeTest {
 
         readData("AQI");
 
-        Instant finish = Instant.now();
+        Instant end = Instant.now();
 
-        long timeElapsed = Duration.between(start, finish).toMillis();
+        long totalTime = Duration.between(start, end).toMillis();
 
-        System.out.println("Total duration of AQI: " + timeElapsed);
-        assertTrue("Total duration of AQI", timeElapsed < 5000);
+        System.out.println("Total duration of AQI: " + totalTime);
+        assertTrue("Total duration of AQI", totalTime < 1000);
     }
 
 

@@ -9,7 +9,7 @@ import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Current;
 
 public class LocationServer {
-	private static LinkedHashMap<String, String> table;
+	public static LinkedHashMap<String, String> table;
 	private static Communicator communicator;
 
 	public static class LocationWorkerI implements helper.LocationWorker {
@@ -22,7 +22,7 @@ public class LocationServer {
 		@Override
 		public void terminate(Current current) {
 			communicator.shutdown();
-			System.out.println("Location Server has terminated!");
+//			System.out.println("Location Server has terminated!");
 		}
 
 	}

@@ -1,5 +1,7 @@
 package main;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
@@ -43,17 +45,17 @@ public class EnviroAPPUI {
 		public void alert(Alert alert, Current current) {
 			String message = "";
 			switch (alert.type) {
-			case WEATHER:
-				message = "Warning, extreme weather is detected, the current weather event is  " + weatherMapping.get(alert.value) + NEWLINE;
-				break;
-			case APO:
-				message = "Warning, significant air pollution level detected, the current AQI is " + alert.value + NEWLINE;
-				break;
-			case TEMPERATURE:
-				message = "Warning,Temperature is now: " + alert.value + NEWLINE;
-				break;
-			default:
-				break;
+				case WEATHER:
+					message = "Warning, extreme weather is detected, the current weather event is  " + weatherMapping.get(alert.value) + NEWLINE;
+					break;
+				case APO:
+					message = "Warning, significant air pollution level detected, the current AQI is " + alert.value + NEWLINE;
+					break;
+				case TEMPERATURE:
+					message = "Warning,Temperature is now: " + alert.value + NEWLINE;
+					break;
+				default:
+					break;
 			}
 			message += "Suggestion - please go to: " + NEWLINE;
 			for (String location : alert.locations) {
@@ -70,14 +72,19 @@ public class EnviroAPPUI {
 		Scanner reader = new Scanner(System.in);
 		username = reader.nextLine();
 
+//		Instant start = Instant.now();
+
 		allSensors = new AllSensors(username);
 		allSensors.run();
 
 		topicName = username + "-alerts";
 		setupSubcriber();
-		
+
 		iniContextCoordinatorWorker(args);
 		ContextCoordinatorWorker.addUser(username);
+
+//		Instant end = Instant.now();
+//		System.out.println("Total duration of login: " + Duration.between(start, end).toMillis());
 
 		printMessage("");
 		handleUserInput = new HandleUserInput();
