@@ -1,22 +1,16 @@
 package ContectCoordinator.CCWorker;
 
-import com.zeroc.Ice.Current;
 import helper.ContextCoordinatorWorker;
 import main.ContextCoordinator;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import support.LocationDetails;
 import utils.CC_Utils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -51,6 +45,9 @@ public class SearchInfoTest {
     @Test
     public void testSearchInfo() throws IllegalArgumentException {
         String actualInfo = ccW.searchInfo(inputName, null);
+        System.out.println("name: " + inputName);
+        System.out.println("expectedInfo: " + expectedInfo);
+        System.out.println("actualInfo: " + actualInfo + "\n");
         assertEquals(expectedInfo, actualInfo);
     }
 }

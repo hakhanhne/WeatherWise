@@ -1,4 +1,4 @@
-package VolumeTesting;
+package SystemTesting;
 
 import org.junit.Test;
 
@@ -93,5 +93,6 @@ public class VolumeTest {
         System.out.println("Total duration of AQI: " + totalTime);
         assertTrue("Total duration of AQI", totalTime < 1000);
     }
+
 
 }

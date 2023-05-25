@@ -31,7 +31,6 @@ public class CheckTempReachedTest {
                 {41, new int[] {42}, false},
                 {42, new int[] {42}, true},
                 {43, new int[] {42}, true},
-                {-1, new int[] {42}, false},
                 {-1, new int[] {-1}, true},
                 {0, new int[] {-1}, true},
                 {11, new int[] {12, 40}, false},

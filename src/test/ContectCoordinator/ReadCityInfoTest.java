@@ -1,11 +1,10 @@
-package Integration;
+package ContectCoordinator;
 
 import main.ContextCoordinator;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import support.LocationDetails;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -13,18 +12,22 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+    This test class tests the method readCityInfo() of ContextCoordinator.
+    For negative test cases (e.g., invalid format, empty file, file not found), please use ReadCityInfoTest_Negative.
+ */
+public class ReadCityInfoTest {
+    static Method readCityInfo;
 
-public class CC_CityInfo {
-    Method readCityInfo;
-
-    @Before
-    public void setUp() throws NoSuchMethodException {
+    @BeforeClass
+    public static void setUp() throws NoSuchMethodException {
         readCityInfo = ContextCoordinator.class.getDeclaredMethod("readCityInfo");
         readCityInfo.setAccessible(true);
     }
 
     @Test
-    public void testReadCityInfo_ValidFile() throws InvocationTargetException, IllegalAccessException {
+    public void testReadCityInfo() throws IllegalAccessException, InvocationTargetException {
+        int expectedSize = 4;
         String[] expectedName = new String[]{"Vivo City Shopping Centre", "Crescent Mall",
                 "Dam Sen Parklands", "Ho Chi Minh City, Downtown"};
         String[] expectedLocation = new String[]{"A", "B", "C", "D"};;
@@ -39,27 +42,17 @@ public class CC_CityInfo {
                 Arrays.asList("cinema, restaurants, shops".split(", ")),
                 Arrays.asList("restaurants, pool, shops, Ferris wheel".split(", ")),
                 Arrays.asList("restaurants, shops, market, bowling".split(", "))
-        );;
+        );
+
         List<LocationDetails> actualCityInfo = (List<LocationDetails>) readCityInfo.invoke(null);
+        assertEquals(expectedSize, actualCityInfo.size());
 
         for (int i = 0; i < expectedName.length; i++) {
-            assertEquals("Wrong location name.", expectedName[i], actualCityInfo.get(i).getName());
-            assertEquals("Wrong location.", expectedLocation[i], actualCityInfo.get(i).getLocation());
-            assertEquals("Wrong info.", expectedInfo[i], actualCityInfo.get(i).getInfo());
-            assertEquals("Wrong service.", expectedServices.get(i), actualCityInfo.get(i).getServices());
+            assertEquals(expectedName[i], actualCityInfo.get(i).getName());
+            assertEquals(expectedLocation[i], actualCityInfo.get(i).getLocation());
+            assertEquals(expectedInfo[i], actualCityInfo.get(i).getInfo());
+            assertEquals(expectedServices.get(i), actualCityInfo.get(i).getServices());
         }
     }
-
-    @Test
-    public void testReadCityInfo_EmptyFile() throws InvocationTargetException, IllegalAccessException {
-        List<LocationDetails> actualCityInfo = (List<LocationDetails>) readCityInfo.invoke(null);
-        assertEquals(0, actualCityInfo.size());
-    }
-
-    @Test
-    public void testReadCityInfo_NoFile() throws InvocationTargetException, IllegalAccessException {
-        readCityInfo.invoke(null);
-    }
-
 }
 

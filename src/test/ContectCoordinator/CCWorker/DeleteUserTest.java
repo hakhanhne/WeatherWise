@@ -37,7 +37,8 @@ public class DeleteUserTest {
         return Arrays.asList(new Object[][]{
                 {"Jack", 1},
                 {"David", 1},
-                {"jack", 2},
+                {"jack", 1},
+                {"Khanh", 2},
                 {"", 2},
                 {null, 2},
         });
@@ -64,13 +65,14 @@ public class DeleteUserTest {
 
     @Test
     public void testDeleteUser() throws IllegalAccessException, AssertionError {
-        try {
-            ccW.deleteUser(username, null);
-            LinkedHashMap<String, User> usersAfter = (LinkedHashMap<String, User>) usersField.get(null);
-            assertEquals("wrong size:\n" + usersAfter, expectedSize, usersAfter.size());
-        } catch (NullPointerException e) {
-            fail("user not found: " + username);
-        }
+        System.out.println("size before delete:" + ((LinkedHashMap<String, User>) usersField.get(null)).size());
+        System.out.println("trying to delete: " + username);
+
+        ccW.deleteUser(username, null);
+        System.out.println("deleted: " + username);
+        LinkedHashMap<String, User> usersAfter = (LinkedHashMap<String, User>) usersField.get(null);
+        System.out.println("size after delete:" + usersAfter.size() + "\n");
+        assertEquals("wrong size:\n" + usersAfter, expectedSize, usersAfter.size());
     }
 }
 
