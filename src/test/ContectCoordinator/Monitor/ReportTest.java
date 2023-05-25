@@ -36,14 +36,17 @@ public class ReportTest {
     @Parameterized.Parameter(1)
     public boolean expectedTempReached;
 
+    @Parameterized.Parameter(2)
+    public int expectedApoThreshold;
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {new SensorData("Jack", "A", 15, 25), false},
-                {new SensorData("Jack", "B", 20, 30), true},
-                {new SensorData("David", "C", 0, 40), false},
-                {new SensorData("David", "D", -1, 0), false},
-                {new SensorData("David", "D", 16, 0), true},
+                {new SensorData("Jack", "A", 15, 25), false, 30},
+                {new SensorData("Jack", "B", 20, 30), true, 30},
+                {new SensorData("David", "C", 0, 40), false, 45},
+                {new SensorData("David", "D", -1, 0), false, 60},
+                {new SensorData("David", "D", 16, 0), true, 60},
         });
     }
 
@@ -67,5 +70,6 @@ public class ReportTest {
         LinkedHashMap<String, User> users = (LinkedHashMap<String, User>) usersField.get(null);
         assertEquals(sensorData, users.get(sensorData.username).sensorData);
         assertEquals(expectedTempReached, users.get(sensorData.username).tempReached);
+        assertEquals("APO is wrong", expectedApoThreshold, users.get(sensorData.username).apoThreshhold);
     }
 }
