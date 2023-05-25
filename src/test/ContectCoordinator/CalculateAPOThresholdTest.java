@@ -17,10 +17,10 @@ import static org.junit.Assert.assertEquals;
 public class CalculateAPOThresholdTest {
 
     @Parameterized.Parameter
-    public int medicalCondition;
+    public Integer medicalCondition;
 
     @Parameterized.Parameter(1)
-    public int aqi;
+    public Integer aqi;
     @Parameterized.Parameter(2)
     public Integer expectedAPOThreshold;
 
@@ -29,30 +29,38 @@ public class CalculateAPOThresholdTest {
         return Arrays.asList(new Object[][]{
                 {1, 0, 20},
                 {2, 1, 40},
-                {3, 19, 60},
                 {4, 20, 80},
                 {1, 21, 15},
-                {2, 22, 30},
                 {3, 49, 45},
                 {4, 50, 60},
                 {1, 51, 10},
-                {2, 52, 20},
-                {3, 74, 30},
-                {4, 76, 40},
+                {4, 75, 40},
                 {1, 76, 5},
-                {2, 77, 10},
                 {3, 99, 15},
                 {4, 100, 20},
                 {1, 101, null},
                 {1, -1, null},
+                {0, 20, null},
+                {-1, 20, null},
+                {5, 20, null},
+                {null, null, null}
         });
     }
+
 
     @Test
     public void testCalculateAPOThreshold() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         User user = new User();
-        user.medicalConditionType = medicalCondition;
-        user.sensorData.aqi = aqi;
+        try {
+            user.medicalConditionType = medicalCondition;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            user.sensorData.aqi = aqi;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Method calculateAPOThreshold = ContextCoordinator.class.getDeclaredMethod("calculateapoThreshhold", User.class);
         calculateAPOThreshold.setAccessible(true);

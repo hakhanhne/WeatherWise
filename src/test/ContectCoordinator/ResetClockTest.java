@@ -31,7 +31,7 @@ public class ResetClockTest {
                 {"Jack", 13, 0},
                 {"Jack", 20, 0},
                 {"Jack", 0, 0},
-                {"Jack", -1, 0},
+                {"Jack", -1, 0}
         });
     }
 

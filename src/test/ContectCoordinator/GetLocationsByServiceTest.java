@@ -33,7 +33,10 @@ public class GetLocationsByServiceTest {
                 {"restaurants", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Crescent Mall", "Dam Sen Parklands", "Ho Chi Minh City, Downtown"})},
                 {"shops", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Crescent Mall", "Dam Sen Parklands", "Ho Chi Minh City, Downtown"})},
                 {"pool", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Dam Sen Parklands"})},
-                {"bowling", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Ho Chi Minh City, Downtown"})}
+                {"bowling", Arrays.asList(new String[] {"Vivo City Shopping Centre", "Ho Chi Minh City, Downtown"})},
+                {"Cinema", Arrays.asList(new String[] {})},
+                {"something", Arrays.asList(new String[] {})},
+                {null, Arrays.asList(new String[] {})}
         });
     }
 
