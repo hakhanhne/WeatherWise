@@ -11,15 +11,3 @@ pref: when 16 suggest pool
 pref: when APO suggest cinema
 pref: when weather suggest shops
 ***
-name: Matsuri
-Medical Condition Type: 3
-pref: when 16 suggest pool
-pref: when APO suggest cinema
-pref: when weather suggest shops
-***
-name: Nhung
-Medical Condition Type: 3
-pref: when 16 suggest pool
-pref: when APO suggest cinema
-pref: when weather suggest shops
-***

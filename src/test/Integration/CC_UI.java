@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+    Run LocationServer, PreferenceRepository, WeatherAlarm, ContextCoordinatior before running  this test class
+ */
 public class CC_UI {
     @Before
     public void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -37,6 +40,14 @@ public class CC_UI {
     public void testSearchInfo() {
         String info = EnviroAPPUI.ContextCoordinatorWorker.searchInfo("Crescent Mall");
         assertEquals("Crescent Mall Shopping Centre is located 10km South of the Ho Chi Minh City central business district(CBD) and includes Banana Republic, Baskin Robins, CGV Cinema, Bobapop and over 130 specialty stores.", info);
+    }
+
+    @Test
+    public void testSearchItems() {
+        EnviroAPPUI.allSensors = new AllSensors(EnviroAPPUI.username);
+        EnviroAPPUI.allSensors.run();
+        String[] items = EnviroAPPUI.ContextCoordinatorWorker.searchItems(EnviroAPPUI.username);
+        System.out.println(items.length);
     }
 
     @Test
