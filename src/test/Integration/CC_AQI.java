@@ -18,6 +18,9 @@ import java.util.LinkedHashMap;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+    Run LocationServer, PreferenceRepository, WeatherAlarm, ContextCoordinatior before running  this test class
+ */
 @RunWith(Parameterized.class)
 public class CC_AQI {
     static ContextCoordinatorWorker ccW = new ContextCoordinator.ContextCoordinatorWorkerI();
